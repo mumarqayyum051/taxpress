@@ -18,3 +18,4 @@ app.listen(port, () => {
 app.use(passport.initialize());
 
 app.use("/api/users", require("./controllers/user/userController"));
+app.use("/api/cases", require("./controllers/cases/casesController"));
