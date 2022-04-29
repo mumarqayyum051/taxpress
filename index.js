@@ -19,3 +19,4 @@ app.use(passport.initialize());
 
 app.use("/api/users", require("./controllers/user/userController"));
 app.use("/api/cases", require("./controllers/cases/casesController"));
+app.use("/api/services", require("./controllers/service/servicesController"));
