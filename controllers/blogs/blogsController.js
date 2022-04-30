@@ -4,24 +4,19 @@ const router = express.Router();
 var multer = require("../../utilities/multer");
 var cpUpload = multer.array("file", 1);
 
-const { createBlog, getAllBlogs, getBlogById } = require("./blogsService");
-const checkFileType = (req, res, next) => {
-  var file = req.files[0];
-  var fileType = file.mimetype;
+const {
+  createBlog,
+  getAllBlogs,
+  getBlogById,
+  deleteBlogById,
+} = require("./blogsService");
 
-  console.log(file, fileType);
-  if (fileType == "image/jpeg" || fileType == "image/jpg") {
-    next();
-  } else {
-    res.status(400).json({
-      message: "File type not supported",
-    });
-  }
-};
-router.post("/createBlog", checkFileType, cpUpload, createBlog);
+router.post("/createBlog", cpUpload, createBlog);
 
 router.get("/getAllBlogs", getAllBlogs);
 
 router.get("/getBlogById/:blogId", getBlogById);
+
+router.delete("/deleteBlogById/:blogId", deleteBlogById);
 
 module.exports = router;

@@ -19,7 +19,7 @@ const createBlog = (req, res, next) => {
     if (err) {
       return next(new BadRequestResponse(err.message, 400));
     }
-    return next(new OkResponse(result, 200));
+    return next(new OkResponse("Blog has been published", 200));
   });
 };
 
@@ -44,8 +44,19 @@ const getBlogById = (req, res, next) => {
   });
 };
 
+const deleteBlogById = (req, res, next) => {
+  const { blogId } = req.params;
+  const query = `DELETE FROM blogs WHERE id = ${blogId}`;
+  db.query(query, (err, result) => {
+    if (err) {
+      return next(new BadRequestResponse(err.message, 400));
+    }
+    return next(new OkResponse("Blog has been deleted", 200));
+  });
+};
 module.exports = {
   createBlog,
   getAllBlogs,
   getBlogById,
+  deleteBlogById,
 };
