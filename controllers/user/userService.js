@@ -85,16 +85,11 @@ const verifyOTP = (req, res) => {
 };
 
 const login = (req, res, next) => {
-  console.log(req.body);
-
   passport.authenticate(
     "local",
     { session: false },
     function (err, user, info) {
-      console.log("::Err::", err, "::User::", user, "::Info::", info);
-
       if (err) {
-        console.log(err);
         res.send(new BadRequestResponse(err));
       }
       if (!user) {

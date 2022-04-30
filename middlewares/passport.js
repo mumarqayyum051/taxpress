@@ -11,12 +11,13 @@ module.exports = function (passport) {
         console.log(username, password);
         const query = `SELECT * FROM users WHERE username = '${username}'`;
         db.query(query, async (err, result) => {
+          console.log(err, result);
           if (err) {
             return done(err);
           }
-          if (!result) {
+          if (!result.length) {
             return done(null, false, {
-              message: "No User found against this email address",
+              message: "No User found against this username",
             });
           } else if (!result[0].isEmailVerified) {
             return done(null, false, {
