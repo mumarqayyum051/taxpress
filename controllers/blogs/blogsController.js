@@ -9,6 +9,7 @@ const {
   getAllBlogs,
   getBlogById,
   deleteBlogById,
+  editBlogById,
 } = require("./blogsService");
 
 router.post("/createBlog", cpUpload, createBlog);
@@ -16,6 +17,8 @@ router.post("/createBlog", cpUpload, createBlog);
 router.get("/getAllBlogs", getAllBlogs);
 
 router.get("/getBlogById/:blogId", getBlogById);
+
+router.put("/editBlogById/:blogId", cpUpload, editBlogById);
 
 router.delete("/deleteBlogById/:blogId", deleteBlogById);
 
