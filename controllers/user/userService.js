@@ -11,36 +11,54 @@ let {
   BadRequestResponse,
   UnauthorizedResponse,
 } = require("express-http-response");
+const {
+  sendEmailOTPVerificationCode,
+} = require("../../utilities/emailService");
 
+// const register = async (req, res, next) => {
+//   const { username, email, address, password } = req.body.user || req.body;
+
+//   if (!username || !email || !address || !password) {
+//     return res.send(new BadRequestResponse("Please fill all the fields"));
+//   }
+
+//   const { OTP, OTPExpiry } = setOTP();
+//   console.log(OTP, OTPExpiry);
+//   const hashedPassword = await hashPassword(password);
+//   console.log(hashedPassword);
+//   const query = `INSERT INTO users (username,address, password, OTP, OTPExpiry) VALUES ('${username}', '${address}', '${hashedPassword}', '${OTP}', '${OTPExpiry}')`;
+
+//   db.query(query, (err, result) => {
+//     if (err) {
+//       console.log(err);
+//       return res.send(new BadRequestResponse(err));
+//     } else {
+//       return res.send(new OkResponse("User Registered Successfully", 200));
+//     }
+//   });
+// };
 const register = async (req, res, next) => {
-  const { username, email, address, password } = req.body.user || req.body;
+  const { username, address, password } = req.body.user || req.body;
 
-  if (!username || !email || !address || !password) {
+  if (!username || !address || !password) {
     return res.send(new BadRequestResponse("Please fill all the fields"));
   }
 
   const { OTP, OTPExpiry } = setOTP();
   console.log(OTP, OTPExpiry);
-  return;
   const hashedPassword = await hashPassword(password);
   console.log(hashedPassword);
-  const query = `INSERT INTO users (username, email,address, password, OTP, OTPExpiry) VALUES ('${username}', '${email}', '${address}, '${hashedPassword}', '${OTP}', '${OTPExpiry}')`;
+  const query = `INSERT INTO users (username,address, password, OTP, OTPExpiry) VALUES ('${username}', '${address}', '${hashedPassword}', '${OTP}', '${OTPExpiry}')`;
 
   db.query(query, (err, result) => {
     if (err) {
       console.log(err);
       return res.send(new BadRequestResponse(err));
     } else {
-      return res.send(
-        new OkResponse(
-          "An OTP has been sent to you via email that has an expiry of 1 min",
-          200,
-        ),
-      );
+      return res.send(new OkResponse("User Registered Successfully", 200));
     }
   });
 };
-
 const verifyOTP = (req, res) => {
   const { email, otp } = req.body.user;
   console.log(email, otp);
@@ -67,6 +85,8 @@ const verifyOTP = (req, res) => {
 };
 
 const login = (req, res, next) => {
+  console.log(req.body);
+
   passport.authenticate(
     "local",
     { session: false },
@@ -82,6 +102,10 @@ const login = (req, res, next) => {
       } else {
         const token = generateToken(user.email, user.user_id);
         delete user.password;
+        delete user?.OTP;
+        delete user?.OTPExpiry;
+        delete user?.isEmailVerified;
+        delete user?.isOTPVerified;
         res.send(new OkResponse({ ...user, token: token }, 200));
       }
     },

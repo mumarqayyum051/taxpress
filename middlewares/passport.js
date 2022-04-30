@@ -6,11 +6,10 @@ module.exports = function (passport) {
   console.log(passport);
   passport.use(
     new LocalStrategy(
-      { usernameField: "email", passwordField: "password" },
-
-      (email, password, done) => {
-        console.log(email, password);
-        const query = `SELECT * FROM users WHERE email = '${email}'`;
+      { usernameField: "username", passwordField: "password" },
+      (username, password, done) => {
+        console.log(username, password);
+        const query = `SELECT * FROM users WHERE username = '${username}'`;
         db.query(query, async (err, result) => {
           if (err) {
             return done(err);
