@@ -2,10 +2,10 @@ const express = require("express");
 const app = express();
 const passport = require("passport");
 const db = require("./db");
+const path = require("path");
 require("dotenv").config();
 const port = process.env.PORT;
 const httpResponse = require("express-http-response");
-app.use(httpResponse.Middleware);
 const cors = require("cors");
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -16,7 +16,11 @@ app.listen(port, () => {
 });
 
 app.use(passport.initialize());
+app.use(express.static(path.join(__dirname, "/public")));
 
 app.use("/api/users", require("./controllers/user/userController"));
 app.use("/api/cases", require("./controllers/cases/casesController"));
 app.use("/api/services", require("./controllers/service/servicesController"));
+app.use("/api/blogs", require("./controllers/blogs/blogsController"));
+
+app.use(httpResponse.Middleware);

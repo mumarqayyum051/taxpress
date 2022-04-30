@@ -13,11 +13,18 @@ let {
 } = require("express-http-response");
 
 const register = async (req, res, next) => {
-  const { name, email, password } = req.body.user;
-  const { otp, otpExpiry } = setOTP();
+  const { username, email, address, password } = req.body.user || req.body;
+
+  if (!username || !email || !address || !password) {
+    return res.send(new BadRequestResponse("Please fill all the fields"));
+  }
+
+  const { OTP, OTPExpiry } = setOTP();
+  console.log(OTP, OTPExpiry);
+  return;
   const hashedPassword = await hashPassword(password);
   console.log(hashedPassword);
-  const query = `INSERT INTO users (name, email, password, otp, otp_expiry) VALUES ('${name}', '${email}', '${hashedPassword}', '${otp}', '${otpExpiry}')`;
+  const query = `INSERT INTO users (username, email,address, password, OTP, OTPExpiry) VALUES ('${username}', '${email}', '${address}, '${hashedPassword}', '${OTP}', '${OTPExpiry}')`;
 
   db.query(query, (err, result) => {
     if (err) {
@@ -120,12 +127,12 @@ const adminLogin = (req, res) => {
   });
 };
 const setOTP = () => {
-  const otp = Math.floor(1000 + Math.random() * 9000);
+  const OTP = Math.floor(1000 + Math.random() * 9000);
   const date = new Date();
-  const otpExpiry = date.setMinutes(
+  const OTPExpiry = date.setMinutes(
     date.getMinutes() + +process.env.OTP_EXPIRY_TIME,
   );
-  return { otp, otpExpiry };
+  return { OTP, OTPExpiry };
 };
 
 const hashPassword = async (password) => {
