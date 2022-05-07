@@ -19,6 +19,7 @@ const uploadCase = (req, res, next) => {
     phraseSearch,
     judge,
     lawyer,
+    journals,
     appellant_or_opponent,
     principleOfCaseLaws,
   } = req.body || req.body.case;
@@ -41,13 +42,14 @@ const uploadCase = (req, res, next) => {
     !lawyer ||
     !appellant_or_opponent ||
     !principleOfCaseLaws ||
+    !journals ||
     !serverLink
   ) {
     return res
       .status(403)
       .send(new BadRequestResponse("Please fill all the fields"));
   }
-  const query = `INSERT INTO cases ( year_or_vol, pageNo, month, law_or_statute, section, section2, court, caseNo, dated, textSearch1, textSearch2, phraseSearch, judge, lawyer, appellant_or_opponent, principleOfCaseLaws, file) VALUES ('${year_or_vol}', '${pageNo}', '${month}', '${law_or_statute}', '${section}', '${section2}', '${court}', '${caseNo}', '${dated}', '${textSearch1}', '${textSearch2}', '${phraseSearch}', '${judge}', '${lawyer}', '${appellant_or_opponent}', '${principleOfCaseLaws}', '${serverLink}')`;
+  const query = `INSERT INTO cases ( year_or_vol, pageNo, month, law_or_statute, section, section2, court, caseNo, dated, textSearch1, textSearch2, phraseSearch, judge, lawyer, appellant_or_opponent, principleOfCaseLaws,journals, file) VALUES ('${year_or_vol}', '${pageNo}', '${month}', '${law_or_statute}', '${section}', '${section2}', '${court}', '${caseNo}', '${dated}', '${textSearch1}', '${textSearch2}', '${phraseSearch}', '${judge}', '${lawyer}', '${appellant_or_opponent}', '${principleOfCaseLaws}', '${journals}', '${serverLink}')`;
 
   db.query(query, (err, result) => {
     if (err) {
