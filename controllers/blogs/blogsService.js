@@ -4,8 +4,6 @@ const db = require("../../db");
 const createBlog = (req, res, next) => {
   const { title, paragraph, date } = req.body.blog || req.body;
   const filePath = req.files[0].path;
-
-  console.log(title, paragraph, filePath);
   if (!title || !paragraph || !filePath || !date) {
     return next(new BadRequestResponse("Please fill all the fields", 400));
   }
@@ -14,7 +12,8 @@ const createBlog = (req, res, next) => {
   var pathname = new URL(filePath).pathname;
   var serverLink = pathname.split("\\").splice(-2).join("/");
   const image = domain + "/" + serverLink;
-  const query = `INSERT INTO blogs (title, paragraph,date, image) VALUES ('${title}', '${paragraph}','${date}', '${image}')`;
+  console.log(serverLink);
+  const query = `INSERT INTO blogs (title, paragraph,date, image) VALUES ('${title}', '${paragraph}','${date}', '${serverLink}')`;
   db.query(query, (err, result) => {
     if (err) {
       return next(new BadRequestResponse(err.message, 400));
@@ -69,7 +68,7 @@ const editBlogById = (req, res, next) => {
   var pathname = new URL(filePath).pathname;
   var serverLink = pathname.split("\\").splice(-2).join("/");
   const image = domain + "/" + serverLink;
-  const query = `UPDATE blogs SET title = '${title}', paragraph = '${paragraph}', image = '${image}' WHERE id = ${blogId}`;
+  const query = `UPDATE blogs SET title = '${title}', paragraph = '${paragraph}', image = '${serverLink}' WHERE id = ${blogId}`;
   db.query(query, (err, result) => {
     if (err) {
       return next(new BadRequestResponse(err.message, 400));
