@@ -22,5 +22,9 @@ app.use("/api/users", require("./controllers/user/userController"));
 app.use("/api/cases", require("./controllers/cases/casesController"));
 app.use("/api/services", require("./controllers/service/servicesController"));
 app.use("/api/blogs", require("./controllers/blogs/blogsController"));
+app.use(
+  "/api/notifications",
+  require("./controllers/notifications/notificationsController"),
+);
 
 app.use(httpResponse.Middleware);

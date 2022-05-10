@@ -25,6 +25,7 @@ const uploadCase = (req, res, next) => {
   } = req.body || req.body.case;
   var pathname = new URL(filePath).pathname;
   var serverLink = pathname.split("\\").splice(-2).join("/");
+  console.log({ serverLink, ...req.body });
   if (
     !year_or_vol ||
     !pageNo ||
@@ -79,6 +80,7 @@ const searchCase = (req, res) => {
     phraseSearch,
     judge,
     lawyer,
+    journals,
     appellant_or_opponent,
     principleOfCaseLaws,
   } = req.body || req.body.case;
@@ -125,6 +127,10 @@ const searchCase = (req, res) => {
   if (lawyer) {
     query += ` lawyer = '${lawyer}' AND`;
   }
+  if (journals) {
+    query += ` journals = '${journals}' AND`;
+  }
+
   if (appellant_or_opponent) {
     query += ` appellant_or_opponent = '${appellant_or_opponent}' AND`;
   }

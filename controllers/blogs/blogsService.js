@@ -28,6 +28,12 @@ const getAllBlogs = (req, res, next) => {
     if (err) {
       return next(new BadRequestResponse(err.message, 400));
     }
+    if (result.length) {
+      for (const blog of result) {
+        blog.paragraph = blog.paragraph;
+      }
+    }
+    console.log(result);
     return next(new OkResponse(result, 200));
   });
 };

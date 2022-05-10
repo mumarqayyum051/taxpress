@@ -122,7 +122,7 @@ const createServiceCategory = (req, res, next) => {
   if (!serviceCategoryName) {
     return next(new BadRequestResponse("Missing required fields"));
   }
-  const query = `Insert into serviceTypes (serviceCategoryName) values ('${serviceCategoryName}')`;
+  const query = `Insert into servicetypes (serviceCategoryName) values ('${serviceCategoryName}')`;
   db.query(query, (err, result) => {
     if (err) {
       return next(new BadRequestResponse(err));
