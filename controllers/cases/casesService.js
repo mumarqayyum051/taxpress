@@ -142,6 +142,7 @@ const searchCase = (req, res) => {
     .split(" ")
     .splice(0, query.split(" ").length - 1)
     .join(" ");
+  query = query.split("AND").slice(0, -1).join("AND");
 
   console.log(query);
 

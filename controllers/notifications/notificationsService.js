@@ -41,7 +41,7 @@ const searchNotifications = (req, res) => {
   if (law_or_statute_id) {
     search += `law_or_statute_id = '${law_or_statute_id}' `;
   }
-  console.log(search);
+  search = search.split("AND").slice(0, -1).join("AND");
   db.query(search, (err, result) => {
     console.log(result);
     if (err) {

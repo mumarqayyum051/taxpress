@@ -26,5 +26,11 @@ app.use(
   "/api/notifications",
   require("./controllers/notifications/notificationsController"),
 );
+app.use("/api/counts", require("./controllers/counts/countsController"));
+app.use("/api/statutes", require("./controllers/statutes/statutesController"));
+app.use(
+  "/api/dictionary",
+  require("./controllers/dictionary/dictionaryController"),
+);
 
 app.use(httpResponse.Middleware);
