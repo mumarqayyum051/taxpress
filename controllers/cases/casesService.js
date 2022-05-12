@@ -224,9 +224,22 @@ const searchCase = (req, res) => {
     }
   });
 };
-
+const deleteCase = (req, res, next) => {
+  const id = req.params.id;
+  if (!id) {
+    return res.status(403).send(new BadRequestResponse("Please provide id"));
+  }
+  let deleteQuery = `DELETE FROM cases WHERE id = '${id}'`;
+  db.query(deleteQuery, (err, result) => {
+    if (err) {
+      return res.send(new BadRequestResponse(err));
+    }
+    return res.send(new OkResponse("Case has been deleted successfully", 200));
+  });
+};
 module.exports = {
   addCase,
   searchCase,
   updateCase,
+  deleteCase,
 };
