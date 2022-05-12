@@ -1,7 +1,7 @@
 const { BadRequestResponse, OkResponse } = require("express-http-response");
 const db = require("../../db");
 
-const uploadCase = (req, res, next) => {
+const addCase = (req, res, next) => {
   const filePath = req.files[0].path;
 
   const {
@@ -64,6 +64,75 @@ const uploadCase = (req, res, next) => {
   });
 };
 
+const updateCase = (req, res, next) => {
+  const filePath = req.files[0].path;
+
+  const {
+    year_or_vol,
+    pageNo,
+    month,
+    law_or_statute,
+    section,
+    section2,
+    court,
+    caseNo,
+    dated,
+    textSearch1,
+    textSearch2,
+    phraseSearch,
+    judge,
+    lawyer,
+    journals,
+    appellant_or_opponent,
+    principleOfCaseLaws,
+  } = req.body || req.body.case;
+  var pathname = new URL(filePath).pathname;
+  var serverLink = pathname.split("\\").splice(-2).join("/");
+  console.log({ serverLink, ...req.body });
+
+  const id = req.params.id;
+
+  if (!id) {
+    return res.status(403).send(new BadRequestResponse("Please provide id"));
+  }
+  if (
+    !year_or_vol ||
+    !pageNo ||
+    !month ||
+    !law_or_statute ||
+    !section ||
+    !section2 ||
+    !court ||
+    !caseNo ||
+    !dated ||
+    !textSearch1 ||
+    !textSearch2 ||
+    !phraseSearch ||
+    !judge ||
+    !lawyer ||
+    !appellant_or_opponent ||
+    !principleOfCaseLaws ||
+    !journals ||
+    !serverLink
+  ) {
+    return res
+      .status(403)
+      .send(new BadRequestResponse("Please fill all the fields"));
+  }
+
+  let update = `UPDATE cases SET year_or_vol = '${year_or_vol}', pageNo = '${pageNo}', month = '${month}', law_or_statute = '${law_or_statute}', section = '${section}', section2 = '${section2}', court = '${court}', caseNo = '${caseNo}', dated = '${dated}', textSearch1 = '${textSearch1}', textSearch2 = '${textSearch2}', phraseSearch = '${phraseSearch}', judge = '${judge}', lawyer = '${lawyer}', appellant_or_opponent = '${appellant_or_opponent}', principleOfCaseLaws = '${principleOfCaseLaws}', journals = '${journals}', file = '${serverLink}' WHERE id = '${id}'`;
+
+  db.query(update, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(403).send(new BadRequestResponse(err));
+    } else {
+      return res.send(
+        new OkResponse("Case has been updated successfully", 200),
+      );
+    }
+  });
+};
 const searchCase = (req, res) => {
   const {
     year_or_vol,
@@ -155,8 +224,33 @@ const searchCase = (req, res) => {
     }
   });
 };
+const deleteCase = (req, res, next) => {
+  const id = req.params.id;
+  if (!id) {
+    return res.status(403).send(new BadRequestResponse("Please provide id"));
+  }
+  let deleteQuery = `DELETE FROM cases WHERE id = '${id}'`;
+  db.query(deleteQuery, (err, result) => {
+    if (err) {
+      return res.send(new BadRequestResponse(err));
+    }
+    return res.send(new OkResponse("Case has been deleted successfully", 200));
+  });
+};
 
+const getAllCases = (req, res) => {
+  let query = `SELECT * FROM cases`;
+  db.query(query, (err, result) => {
+    if (err) {
+      return res.send(new BadRequestResponse(err));
+    }
+    return res.send(new OkResponse(result[0], 200));
+  });
+};
 module.exports = {
-  uploadCase,
+  addCase,
   searchCase,
+  updateCase,
+  deleteCase,
+  getAllCases,
 };
