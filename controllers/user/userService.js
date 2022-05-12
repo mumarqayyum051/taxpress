@@ -45,7 +45,8 @@ const register = async (req, res, next) => {
       db.query(query, (err, result) => {
         if (err) {
           console.log(err);
-          return res.send(new BadRequestResponse(err));
+          return res
+          .status(400).send(new BadRequestResponse(err));
         } else {
           return res.send(new OkResponse('User Registered Successfully', 200));
         }
