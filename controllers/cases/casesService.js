@@ -237,9 +237,20 @@ const deleteCase = (req, res, next) => {
     return res.send(new OkResponse("Case has been deleted successfully", 200));
   });
 };
+
+const getAllCases = (req, res) => {
+  let query = `SELECT * FROM cases`;
+  db.query(query, (err, result) => {
+    if (err) {
+      return res.send(new BadRequestResponse(err));
+    }
+    return res.send(new OkResponse(result[0], 200));
+  });
+};
 module.exports = {
   addCase,
   searchCase,
   updateCase,
   deleteCase,
+  getAllCases,
 };

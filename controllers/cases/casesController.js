@@ -7,6 +7,7 @@ const {
   updateCase,
   searchCase,
   deleteCase,
+  getAllCases,
 } = require("./casesService");
 var multer = require("../../utilities/multer");
 
@@ -16,5 +17,6 @@ router.post("/addCase", cpUpload, addCase);
 router.put("/updateCase/:id", cpUpload, updateCase);
 router.post("/searchCase", searchCase);
 router.delete("/deleteCase/:id", deleteCase);
+router.get("/getAllCases", getAllCases);
 
 module.exports = router;
