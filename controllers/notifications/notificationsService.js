@@ -25,7 +25,7 @@ const createNotification = (req, res, next) => {
       .send(new BadRequestResponse("Please fill all the fields"));
   }
 
-  const query = `INSERT INTO notifications (notificationTypeId,sroNO,subject,year,dated,law_or_statute_id,file) VALUES ('${notificationTypeId}', '${sroNO}', '${subject}','${year}',  '${dated}', '${law_or_statute_id}','${file}')`;
+  const query = `INSERT INTO notifications (notificationTypeId,sroNO,subject,year,dated,law_or_statute_id,file) VALUES ('${notificationTypeId}', '${sroNO}', '${subject}','${year}',  '${dated}', '${law_or_statute_id}','${serverLink}')`;
   db.query(query, (err, result) => {
     if (err) {
       return res.send(new BadRequestResponse(err));
