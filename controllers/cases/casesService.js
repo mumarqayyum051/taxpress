@@ -212,9 +212,19 @@ const searchCase = (req, res) => {
     query += ` principleOfCaseLaws LIKE '%${principleOfCaseLaws}%'`;
   }
 
-  query = query.split("OR").slice(0, -1).join("OR");
-
-  console.log(query);
+  query = query.trim();
+  if (query.includes("OR") && query.endsWith("OR")) {
+    query = query.split("OR").slice(0, -1).join(" OR ");
+  }
+  console.log(query.includes("LIKE"));
+  if (!query.includes("LIKE")) {
+    return res
+      .status(422)
+      .send(
+        new BadRequestResponse("Please pass at least one search parameter"),
+      );
+  }
+  console.log("-result---", query);
 
   db.query(query, (err, result) => {
     console.log(result);
