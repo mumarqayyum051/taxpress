@@ -3,7 +3,7 @@ const db = require("../../db");
 
 const createNotification = (req, res, next) => {
   const filePath = req.files[0].path;
-  const { notificationTypeId, sroNO, subject, year, dated, law_or_statute_id } =
+  const { notificationTypeId, sroNO, subject, year, dated, law_or_statute } =
     req.body || req.body.notification;
 
   var domain = req.headers.host;
@@ -17,7 +17,7 @@ const createNotification = (req, res, next) => {
     !subject ||
     !year ||
     !dated ||
-    !law_or_statute_id ||
+    !law_or_statute ||
     !file
   ) {
     return res
@@ -25,7 +25,7 @@ const createNotification = (req, res, next) => {
       .send(new BadRequestResponse("Please fill all the fields"));
   }
 
-  const query = `INSERT INTO notifications (notificationTypeId,sroNO,subject,year,dated,law_or_statute_id,file) VALUES ('${notificationTypeId}', '${sroNO}', '${subject}','${year}',  '${dated}', '${law_or_statute_id}','${serverLink}')`;
+  const query = `INSERT INTO notifications (notificationTypeId,sroNO,subject,year,dated,law_or_statute,file) VALUES ('${notificationTypeId}', '${sroNO}', '${subject}','${year}',  '${dated}', '${law_or_statute}','${serverLink}')`;
   db.query(query, (err, result) => {
     if (err) {
       return res.send(new BadRequestResponse(err));
@@ -35,7 +35,7 @@ const createNotification = (req, res, next) => {
 };
 
 const searchNotifications = (req, res) => {
-  const { sroNO, year, notificationTypeId, subject, dated, law_or_statute_id } =
+  const { sroNO, year, notificationTypeId, subject, dated, law_or_statute } =
     req.body || req.body.notification;
 
   console.log(req.body);
@@ -55,8 +55,8 @@ const searchNotifications = (req, res) => {
   if (dated) {
     search += `dated LIKE '%${dated}%' OR `;
   }
-  if (law_or_statute_id) {
-    search += `law_or_statute_id LIKE '%${law_or_statute_id}%' `;
+  if (law_or_statute) {
+    search += `law_or_statute LIKE '%${law_or_statute}%' `;
   }
   search = search.split("OR").slice(0, -1).join("OR");
   db.query(search, (err, result) => {
