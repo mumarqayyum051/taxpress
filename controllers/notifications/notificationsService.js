@@ -18,7 +18,7 @@ const createNotification = (req, res, next) => {
     !year ||
     !dated ||
     !law_or_statute ||
-    !file
+    !serverLink
   ) {
     return res
       .status(403)
