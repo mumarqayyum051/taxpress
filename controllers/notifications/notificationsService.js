@@ -68,4 +68,45 @@ const searchNotifications = (req, res) => {
   });
 };
 
-module.exports = { createNotification, searchNotifications };
+const createNotificationType = (req, res) => {
+  const { notificationCategoryName } = req.body || req.body.notificationType;
+
+  if (!notificationCategoryName) {
+    return res.send(new BadRequestResponse("Please fill all the fields"));
+  }
+  const query = `INSERT INTO notificationtypes (notificationCategoryName) VALUES ('${notificationCategoryName}')`;
+
+  db.query(query, (err, result) => {
+    if (err) {
+      return res.send(new BadRequestResponse(err));
+    }
+    return res.send(new OkResponse("Notification type created successfully"));
+  });
+};
+
+const getNotificationTypes = (req, res) => {
+  const query = `SELECT * FROM notificationtypes`;
+  db.query(query, (err, result) => {
+    if (err) {
+      return res.send(new BadRequestResponse(err));
+    }
+    return res.send(new OkResponse(result));
+  });
+};
+
+const getAllNotifications = (req, res) => {
+  const query = `SELECT * FROM notifications`;
+  db.query(query, (err, result) => {
+    if (err) {
+      return res.send(new BadRequestResponse(err));
+    }
+    return res.send(new OkResponse(result));
+  });
+};
+module.exports = {
+  createNotification,
+  searchNotifications,
+  createNotificationType,
+  getNotificationTypes,
+  getAllNotifications,
+};
