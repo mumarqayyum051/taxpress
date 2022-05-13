@@ -153,75 +153,79 @@ const searchCase = (req, res) => {
     appellant_or_opponent,
     principleOfCaseLaws,
   } = req.body || req.body.case;
+  if (!req.body) {
+    return res
+      .status(403)
+      .send(new BadRequestResponse("Please at least send one field"));
+  }
   let query = `SELECT * FROM cases WHERE`;
   if (year_or_vol) {
-    query += ` year_or_vol = '${year_or_vol}' AND`;
+    query += ` year_or_vol LIKE '%${year_or_vol}%' OR`;
   }
   if (pageNo) {
-    query += ` pageNo = '${pageNo}' AND`;
+    query += ` pageNo LIKE '%${pageNo}%' OR`;
   }
   if (month) {
-    query += ` month = '${month}' AND`;
+    query += ` month LIKE'%${month}%' OR`;
   }
   if (law_or_statute) {
-    query += ` law_or_statute = '${law_or_statute}' AND`;
+    query += ` law_or_statute LIKE '%${law_or_statute}%' OR`;
   }
   if (section) {
-    query += ` section = '${section}' AND`;
+    query += ` section LIKE'%${section}%' OR`;
   }
   if (section2) {
-    query += ` section2 = '${section2}' AND`;
+    query += ` section2 LIKE'%${section2}%' OR`;
   }
   if (court) {
-    query += ` court = '${court}' AND`;
+    query += ` court LIKE '%${court}%' OR`;
   }
   if (caseNo) {
-    query += ` caseNo = '${caseNo}' AND`;
+    query += ` caseNo LIKE'%${caseNo}%' OR`;
   }
   if (dated) {
-    query += ` dated = '${dated}' AND`;
+    query += ` dated LIKE '%${dated}%' OR`;
   }
   if (textSearch1) {
-    query += ` textSearch1 LIKE '%${textSearch1}%' AND`;
+    query += ` textSearch1 LIKE '%${textSearch1}%' OR`;
   }
   if (textSearch2) {
-    query += ` textSearch2 LIKE '%${textSearch2}%' AND`;
+    query += ` textSearch2 LIKE '%${textSearch2}%' OR`;
   }
   if (phraseSearch) {
-    query += ` phraseSearch LIKE '%${phraseSearch}%' AND`;
+    query += ` phraseSearch LIKE '%${phraseSearch}%' OR`;
   }
   if (judge) {
-    query += ` judge = '${judge}' AND`;
+    query += ` judge LIKE '%${judge}%' OR`;
   }
   if (lawyer) {
-    query += ` lawyer = '${lawyer}' AND`;
+    query += ` lawyer LIKE '%${lawyer}%' OR`;
   }
   if (journals) {
-    query += ` journals = '${journals}' AND`;
+    query += ` journals LIKE '%${journals}%' OR`;
   }
 
   if (appellant_or_opponent) {
-    query += ` appellant_or_opponent = '${appellant_or_opponent}' AND`;
+    query += ` appellant_or_opponent LIKE '%${appellant_or_opponent}%' OR`;
   }
   if (principleOfCaseLaws) {
-    query += ` principleOfCaseLaws = '${principleOfCaseLaws}'`;
+    query += ` principleOfCaseLaws LIKE '%${principleOfCaseLaws}%'`;
   }
-  console.log(query.split(" "));
-  query = query
-    .split(" ")
-    .splice(0, query.split(" ").length - 1)
-    .join(" ");
-  query = query.split("AND").slice(0, -1).join("AND");
+
+  query = query.split("OR").slice(0, -1).join("OR");
 
   console.log(query);
 
   db.query(query, (err, result) => {
+    console.log(result);
     if (err) {
       console.log(err);
       return res.status(403).send(new BadRequestResponse(err));
-    } else {
-      return res.send(new OkResponse(result[0], 200));
     }
+    if (result.length === 0) {
+      return res.send(new OkResponse(result, 200));
+    }
+    return res.send(new OkResponse(result, 200));
   });
 };
 const deleteCase = (req, res, next) => {
@@ -244,7 +248,7 @@ const getAllCases = (req, res) => {
     if (err) {
       return res.send(new BadRequestResponse(err));
     }
-    return res.send(new OkResponse(result[0], 200));
+    return res.send(new OkResponse(result, 200));
   });
 };
 module.exports = {

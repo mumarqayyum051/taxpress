@@ -8,7 +8,9 @@ const getCounts = (req, res, next) => {
       const query = `SELECT 
   (SELECT COUNT(*) from cases) as caseLaws, 
   (SELECT COUNT(*)  from statutes) as statutes,
-   (SELECT COUNT(*) from notifications) as notifications`;
+   (SELECT COUNT(*) from notifications) as notifications,
+   (SELECT COUNT(*) from dictionary) as dictionaries
+   `;
 
       db.query(query, (err, result) => {
         if (err) {
