@@ -43,7 +43,7 @@ const searchStatutes = (req, res, next) => {
     search += `law_or_statute LIKE '%${law_or_statute}%' OR `;
   }
   if (chapter) {
-    search += `chapter LIKE'%${chapter}%' OR `;
+    search += `chapter LIKE '%${chapter}%' OR `;
   }
   if (section) {
     search += `section LIKE '%${section}%' OR `;
@@ -55,8 +55,19 @@ const searchStatutes = (req, res, next) => {
     search += `textSearch2 LIKE '%${textSearch2}'`;
   }
 
-  search = search.split("OR").slice(0, -1).join("OR");
   console.log(search);
+  search = search.trim();
+  if (search.includes("OR") && search.endsWith("OR")) {
+    search = search.split("OR").slice(0, -1).join(" OR ");
+  }
+  if (!search.includes("LIKE")) {
+    return res
+      .status(422)
+      .send(
+        new BadRequestResponse("Please pass at least one search parameter"),
+      );
+  }
+  console.log("-result---", search);
   db.query(search, (err, result) => {
     if (err) {
       return res.send(new BadRequestResponse(err.message, 400));

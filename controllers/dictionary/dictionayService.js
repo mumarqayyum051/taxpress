@@ -26,16 +26,28 @@ const search = (req, res, next) => {
   const { word, meaning, sld } = req.body || req.body.dictionary;
   let search = `SELECT * FROM dictionary WHERE `;
   if (word) {
-    search += `word Like '%${word}%' AND `;
+    search += `word LIKE '%${word}%' OR `;
   }
   if (meaning) {
-    search += `meaning Like '%${meaning}%' AND `;
+    search += `meaning LIKE '%${meaning}%' OR `;
   }
   if (sld) {
-    search += `sld Like '%${sld}%'`;
+    search += `sld LIKE '%${sld}%'`;
   }
-
-  search = search.split("AND").slice(0, -1).join("AND");
+  console.log(search);
+  search = search.trim();
+  if (search.includes("OR") && search.endsWith("OR")) {
+    search = search.split("OR").slice(0, -1).join(" OR ");
+  }
+  console.log(search.includes("LIKE"));
+  if (!search.includes("LIKE")) {
+    return res
+      .status(422)
+      .send(
+        new BadRequestResponse("Please pass at least one search parameter"),
+      );
+  }
+  console.log("-result---", search);
   db.query(search, (err, result) => {
     if (err) {
       return res.send(new BadRequestResponse(err.message, 400));

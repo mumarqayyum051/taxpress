@@ -3,7 +3,7 @@ const db = require("../../db");
 
 const createNotification = (req, res, next) => {
   const filePath = req.files[0].path;
-  const { notificationTypeId, sroNO, subject, year, dated, law_or_statute } =
+  const { notificationTypeId, sroNO, subject, year, dated, law_or_statute_id } =
     req.body || req.body.notification;
 
   var domain = req.headers.host;
@@ -17,7 +17,7 @@ const createNotification = (req, res, next) => {
     !subject ||
     !year ||
     !dated ||
-    !law_or_statute ||
+    !law_or_statute_id ||
     !serverLink
   ) {
     return res
@@ -25,7 +25,7 @@ const createNotification = (req, res, next) => {
       .send(new BadRequestResponse("Please fill all the fields"));
   }
 
-  const query = `INSERT INTO notifications (notificationTypeId,sroNO,subject,year,dated,law_or_statute,file) VALUES ('${notificationTypeId}', '${sroNO}', '${subject}','${year}',  '${dated}', '${law_or_statute}','${serverLink}')`;
+  const query = `INSERT INTO notifications (notificationTypeId,sroNO,subject,year,dated,law_or_statute_id,file) VALUES ('${notificationTypeId}', '${sroNO}', '${subject}','${year}',  '${dated}', '${law_or_statute_id}','${serverLink}')`;
   db.query(query, (err, result) => {
     if (err) {
       return res.send(new BadRequestResponse(err));
@@ -35,7 +35,7 @@ const createNotification = (req, res, next) => {
 };
 
 const searchNotifications = (req, res) => {
-  const { sroNO, year, notificationTypeId, subject, dated, law_or_statute } =
+  const { sroNO, year, notificationTypeId, subject, dated, law_or_statute_id } =
     req.body || req.body.notification;
 
   console.log(req.body);
@@ -55,12 +55,24 @@ const searchNotifications = (req, res) => {
   if (dated) {
     search += `dated LIKE '%${dated}%' OR `;
   }
-  if (law_or_statute) {
-    search += `law_or_statute LIKE '%${law_or_statute}%' `;
+  if (law_or_statute_id) {
+    search += `law_or_statute_id LIKE '%${law_or_statute_id}%'`;
   }
-  search = search.split("OR").slice(0, -1).join("OR");
+
+  console.log(search);
+  search = search.trim();
+  if (search.includes("OR") && search.endsWith("OR")) {
+    search = search.split("OR").slice(0, -1).join(" OR ");
+  }
+  if (!search.includes("LIKE")) {
+    return res
+      .status(422)
+      .send(
+        new BadRequestResponse("Please pass at least one search parameter"),
+      );
+  }
+  console.log("-result---", search);
   db.query(search, (err, result) => {
-    console.log(result);
     if (err) {
       return res.send(new BadRequestResponse(err));
     }
