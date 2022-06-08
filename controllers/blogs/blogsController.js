@@ -1,0 +1,25 @@
+const express = require("express");
+
+const router = express.Router();
+var multer = require("../../utilities/multer");
+var cpUpload = multer.array("file", 1);
+
+const {
+  createBlog,
+  getAllBlogs,
+  getBlogById,
+  deleteBlogById,
+  editBlogById,
+} = require("./blogsService");
+
+router.post("/createBlog", createBlog);
+
+router.get("/getAllBlogs", getAllBlogs);
+
+router.get("/getBlogById/:blogId", getBlogById);
+
+router.put("/editBlogById/:blogId", editBlogById);
+
+router.delete("/deleteBlogById/:blogId", deleteBlogById);
+
+module.exports = router;

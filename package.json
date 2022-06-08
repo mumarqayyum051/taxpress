@@ -1,0 +1,29 @@
+{
+  "name": "taxpress_api",
+  "version": "1.0.0",
+  "description": "Testing api for taxpress website",
+  "main": "index.js",
+  "author": "Raja Sabiq",
+  "license": "Raja Sabiq",
+  "scripts": {
+    "seed": "node seeder.js",
+    "start": "node index.js",
+    "start:dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "base64-to-file": "^1.1.0",
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-http-response": "^0.0.8",
+    "express-jwt": "^7.7.5",
+    "express-validator": "^6.14.1",
+    "multer": "^1.4.5-lts.1",
+    "mysql-ssh2": "^1.0.1",
+    "nodemailer": "^6.7.5",
+    "nodemon": "^2.0.16",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0"
+  }
+}
