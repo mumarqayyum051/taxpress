@@ -23,9 +23,7 @@ const createNotification = async (req, res, next) => {
     !dated ||
     !law_or_statute_id
   ) {
-    return res
-      .status(403)
-      .send(new BadRequestResponse("Please fill all the fields"));
+    return next(new BadRequestResponse("Please fill all the fields"));
   }
 
   try {
@@ -57,7 +55,6 @@ const searchNotifications = (req, res, next) => {
     law_or_statute_id,
   } = req.body || req.body.notification;
 
-  console.log(req.body);
   let search = `SELECT * FROM notifications WHERE `;
   if (sro_no) {
     search += `sro_no LIKE '%${sro_no}%' OR `;
@@ -78,7 +75,6 @@ const searchNotifications = (req, res, next) => {
     search += `law_or_statute_id LIKE '%${law_or_statute_id}%'`;
   }
 
-  console.log(search);
   search = search.trim();
   if (search.includes("OR") && search.endsWith("OR")) {
     search = search.split("OR").slice(0, -1).join(" OR ");
@@ -144,16 +140,7 @@ const getAllNotifications = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err));
       }
-      if (result.length) {
-        for (let notification of result) {
-          // notification.file = new Buffer(notification.file, "binary").toString(
-          //   "base64",
-          // );
-          notification.dated = new Date(
-            notification.dated,
-          ).toLocaleDateString();
-        }
-      }
+
       return res.send(new OkResponse(result));
     });
   });

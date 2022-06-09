@@ -142,80 +142,97 @@ const updateCase = (req, res, next) => {
     !lawyer ||
     !appellant_or_opponent ||
     !principleOfCaseLaws ||
-    !journals ||
-    !file
+    !journals
   ) {
     return res
       .status(403)
       .send(new BadRequestResponse("Please fill all the fields"));
   }
+
   try {
-    if (section) {
-      section = section.replace(/'/g, "\\'");
-    }
-    if (section2) {
-      section2 = section2.replace(/'/g, "\\'");
-    }
-    if (caseNo) {
-      caseNo = caseNo.replace(/'/g, "\\'");
-    }
-    if (textSearch1) {
-      textSearch1 = textSearch1.replace(/'/g, "\\'");
-    }
-    if (textSearch2) {
-      textSearch2 = textSearch2.replace(/'/g, "\\'");
-    }
-    if (phraseSearch) {
-      phraseSearch = phraseSearch.replace(/'/g, "\\'");
-    }
-    if (judge) {
-      judge = judge.replace(/'/g, "\\'");
-    }
-    if (lawyer) {
-      lawyer = lawyer.replace(/'/g, "\\'");
-    }
-    if (appellant_or_opponent) {
-      appellant_or_opponent = appellant_or_opponent.replace(/'/g, "\\'");
-    }
-    if (principleOfCaseLaws) {
-      principleOfCaseLaws = principleOfCaseLaws.replace(/'/g, "\\'");
-    }
-    if (journals) {
-      journals = journals.replace(/'/g, "\\'");
-    }
-  } catch (err) {
-    return next(new BadRequestResponse(err, 400));
-  }
-  if (!file.includes("upload")) {
-    console.log("upload");
-    const filePath = req?.file?.path?.split("\\").join("/");
-
+    const query = `SELECT * FROM cases WHERE id = '${id}'`;
     db.then((conn) => {
-      let update = `UPDATE cases SET year_or_vol = '${year_or_vol}', pageNo = '${pageNo}', month = '${month}', law_or_statute_id = '${law_or_statute_id}', section = '${section}', section2 = '${section2}', court = '${court}', caseNo = '${caseNo}', dated = '${dated}', textSearch1 = '${textSearch1}', textSearch2 = '${textSearch2}', phraseSearch = '${phraseSearch}', judge = '${judge}', lawyer = '${lawyer}', appellant_or_opponent = '${appellant_or_opponent}', principleOfCaseLaws = '${principleOfCaseLaws}', journals = '${journals}', file = '${filePath}' WHERE id = '${id}'`;
-
-      conn.query(update, (err, result) => {
+      conn.query(query, (err, result) => {
         if (err) {
-          return next(new BadRequestResponse(err.message, 400));
+          return next(new BadRequestResponse(err));
         }
-        return res.send(
-          new OkResponse("Case has been updated successfully", 200),
-        );
-      });
-    });
-  } else {
-    let update = `UPDATE cases SET year_or_vol = '${year_or_vol}', pageNo = '${pageNo}', month = '${month}', law_or_statute_id = '${law_or_statute_id}', section = '${section}', section2 = '${section2}', court = '${court}', caseNo = '${caseNo}', dated = '${dated}', textSearch1 = '${textSearch1}', textSearch2 = '${textSearch2}', phraseSearch = '${phraseSearch}', judge = '${judge}', lawyer = '${lawyer}', appellant_or_opponent = '${appellant_or_opponent}', principleOfCaseLaws = '${principleOfCaseLaws}', journals = '${journals}', file = '${file}' WHERE id = '${id}'`;
-
-    db.then((conn) => {
-      conn.query(update, (err, result) => {
-        if (err) {
-          return next(new BadRequestResponse(err, 400));
-        } else {
-          return res.send(
-            new OkResponse("Case has been updated successfully", 200),
+        if (result.length === 0) {
+          return next(
+            new BadRequestResponse("No record found against given ID"),
           );
         }
+        try {
+          if (section) {
+            section = section.replace(/'/g, "\\'");
+          }
+          if (section2) {
+            section2 = section2.replace(/'/g, "\\'");
+          }
+          if (caseNo) {
+            caseNo = caseNo.replace(/'/g, "\\'");
+          }
+          if (textSearch1) {
+            textSearch1 = textSearch1.replace(/'/g, "\\'");
+          }
+          if (textSearch2) {
+            textSearch2 = textSearch2.replace(/'/g, "\\'");
+          }
+          if (phraseSearch) {
+            phraseSearch = phraseSearch.replace(/'/g, "\\'");
+          }
+          if (judge) {
+            judge = judge.replace(/'/g, "\\'");
+          }
+          if (lawyer) {
+            lawyer = lawyer.replace(/'/g, "\\'");
+          }
+          if (appellant_or_opponent) {
+            appellant_or_opponent = appellant_or_opponent.replace(/'/g, "\\'");
+          }
+          if (principleOfCaseLaws) {
+            principleOfCaseLaws = principleOfCaseLaws.replace(/'/g, "\\'");
+          }
+          if (journals) {
+            journals = journals.replace(/'/g, "\\'");
+          }
+        } catch (err) {
+          return next(new BadRequestResponse(err, 400));
+        }
+        if (!file?.includes("upload")) {
+          console.log("upload");
+          const filePath = req?.file?.path?.split("\\").join("/");
+
+          db.then((conn) => {
+            let update = `UPDATE cases SET year_or_vol = '${year_or_vol}', pageNo = '${pageNo}', month = '${month}', law_or_statute_id = '${law_or_statute_id}', section = '${section}', section2 = '${section2}', court = '${court}', caseNo = '${caseNo}', dated = '${dated}', textSearch1 = '${textSearch1}', textSearch2 = '${textSearch2}', phraseSearch = '${phraseSearch}', judge = '${judge}', lawyer = '${lawyer}', appellant_or_opponent = '${appellant_or_opponent}', principleOfCaseLaws = '${principleOfCaseLaws}', journals = '${journals}', file = '${filePath}' WHERE id = '${id}'`;
+
+            conn.query(update, (err, result) => {
+              if (err) {
+                return next(new BadRequestResponse(err.message, 400));
+              }
+              return res.send(
+                new OkResponse("Case has been updated successfully", 200),
+              );
+            });
+          });
+        } else {
+          let update = `UPDATE cases SET year_or_vol = '${year_or_vol}', pageNo = '${pageNo}', month = '${month}', law_or_statute_id = '${law_or_statute_id}', section = '${section}', section2 = '${section2}', court = '${court}', caseNo = '${caseNo}', dated = '${dated}', textSearch1 = '${textSearch1}', textSearch2 = '${textSearch2}', phraseSearch = '${phraseSearch}', judge = '${judge}', lawyer = '${lawyer}', appellant_or_opponent = '${appellant_or_opponent}', principleOfCaseLaws = '${principleOfCaseLaws}', journals = '${journals}', file = '${file}' WHERE id = '${id}'`;
+
+          db.then((conn) => {
+            conn.query(update, (err, result) => {
+              if (err) {
+                return next(new BadRequestResponse(err, 400));
+              } else {
+                return res.send(
+                  new OkResponse("Case has been updated successfully", 200),
+                );
+              }
+            });
+          });
+        }
       });
     });
+  } catch (e) {
+    return next(new BadRequestResponse(e));
   }
 };
 const searchCase = (req, res, next) => {
@@ -357,7 +374,7 @@ const getAllCases = (req, res, next) => {
 const getCaseById = (req, res, next) => {
   const id = req.params.id;
   if (!id) {
-    return res.status(403).send(new BadRequestResponse("Please provide id"));
+    return next(new BadRequestResponse("Please provide id"));
   }
   let query = `SELECT * FROM cases WHERE id = '${id}'`;
   db.then((conn) => {

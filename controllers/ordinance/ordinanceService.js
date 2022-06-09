@@ -1,13 +1,13 @@
-const { BadRequestResponse, OkResponse } = require('express-http-response');
-const db = require('../../db');
-const path = require('path');
-var base64ToFile = require('base64-to-file');
+const { BadRequestResponse, OkResponse } = require("express-http-response");
+const db = require("../../db");
+const path = require("path");
+var base64ToFile = require("base64-to-file");
 
 const addOrdinance = (req, res, next) => {
   let { highlights, type, file } = req.body || req.body.ordinance;
   //1: Act, 2: Ordinance, 3: Rule
-  if (!highlights || !type || !file) {
-    return next(new BadRequestResponse('Please fill all the fields', 400));
+  if (!highlights || !type) {
+    return next(new BadRequestResponse("Please fill all the fields", 400));
   }
 
   try {
@@ -19,22 +19,22 @@ const addOrdinance = (req, res, next) => {
   }
 
   highlights = JSON.stringify(highlights);
-  const _path = path.join(process.cwd(), 'public', 'uploads/');
+  const _path = path.join(process.cwd(), "public", "uploads/");
   base64ToFile.convert(
     file,
     _path,
-    ['jpg', 'jpeg', 'png', 'pdf'],
+    ["jpg", "jpeg", "png", "pdf"],
     (_filePath) => {
       var pathname = new URL(_filePath).pathname;
-      var filePath = pathname.split('\\').splice(-2).join('/');
+      var filePath = pathname.split("\\").splice(-2).join("/");
 
       let query = `Insert into ordinance ( highlights, type, file ) values('${highlights}', '${type}',  '${filePath}')`;
 
       let responses = [
-        '',
-        'Ordinance has been added',
-        'Act has been added',
-        'Rule has been added',
+        "",
+        "Ordinance has been added",
+        "Act has been added",
+        "Rule has been added",
       ];
       db.then((conn) => {
         conn.query(query, (err, result) => {
@@ -44,7 +44,7 @@ const addOrdinance = (req, res, next) => {
           return res.send(new OkResponse(responses[type], 200));
         });
       });
-    }
+    },
   );
 };
 const deleteOrdinance = (req, res, next) => {
@@ -55,7 +55,7 @@ const deleteOrdinance = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return next(new OkResponse('Ordinance has been deleted', 200));
+      return next(new OkResponse("Ordinance has been deleted", 200));
     });
   });
 };
