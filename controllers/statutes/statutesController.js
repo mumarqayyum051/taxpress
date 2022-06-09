@@ -15,7 +15,7 @@ const {
 } = require("./statutesService");
 
 router.post("/addStatutes", cpUpload, addStatutes);
-router.put("/editStatute/:id", editStatutesById);
+router.put("/editStatute/:id", cpUpload, editStatutesById);
 router.post("/searchStatutes", searchStatutes);
 router.get("/getAllStatutes", getAllStatutes);
 router.get("/getStatutesOnly", getStatutesOnly);

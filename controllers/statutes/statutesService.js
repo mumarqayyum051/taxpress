@@ -39,61 +39,64 @@ const addStatutes = (req, res, next) => {
 const editStatutesById = (req, res, next) => {
   const { id } = req.params;
   console.log(id);
-  let { law_or_statute, chapter, section, textSearch1, textSearch2, file } =
-    req.body || req.body.statutes;
-
-  if (
-    !law_or_statute ||
-    !chapter ||
-    !section ||
-    !textSearch1 ||
-    !textSearch2 ||
-    !file
-  ) {
-    return res.send(
-      new BadRequestResponse("Please fill all the required fields"),
-    );
-  }
-
   try {
-    law_or_statute = law_or_statute.replace(/'/g, "\\'");
-    chapter = chapter.replace(/'/g, "\\'");
-    section = section.replace(/'/g, "\\'");
-    textSearch1 = textSearch1.replace(/'/g, "\\'");
-    textSearch2 = textSearch2.replace(/'/g, "\\'");
-  } catch (e) {
-    return next(new BadRequestResponse(e, 400));
-  }
+    let { law_or_statute, chapter, section, textSearch1, textSearch2, file } =
+      req.body || req.body.statutes;
 
-  if (!file.includes("uploads")) {
-    const filePath = req?.file?.path?.split("\\").join("/");
+    if (
+      !law_or_statute ||
+      !chapter ||
+      !section ||
+      !textSearch1 ||
+      !textSearch2
+    ) {
+      return next(
+        new BadRequestResponse("Please fill all the required fields"),
+      );
+    }
+    console.log(req.body);
+    try {
+      law_or_statute = law_or_statute.replace(/'/g, "\\'");
+      chapter = chapter.replace(/'/g, "\\'");
+      section = section.replace(/'/g, "\\'");
+      textSearch1 = textSearch1.replace(/'/g, "\\'");
+      textSearch2 = textSearch2.replace(/'/g, "\\'");
+    } catch (e) {
+      return next(new BadRequestResponse(e, 400));
+    }
 
-    let update = `UPDATE statutes SET law_or_statute = '${law_or_statute}', chapter = '${chapter}', section = '${section}', textSearch1 = '${textSearch1}', textSearch2 = '${textSearch2}', file = '${filePath}' WHERE id = ${id}`;
+    if (!file?.includes("upload")) {
+      const filePath = req?.file?.path?.split("\\").join("/");
 
-    db.then((conn) => {
-      conn.query(update, (err, result) => {
-        if (err) {
-          return next(new BadRequestResponse(err.message, 400));
-        }
-        return res.send(
-          new OkResponse("Statute has been updated successfully", 200),
-        );
-      });
-    });
-  } else {
-    let update = `UPDATE statutes SET law_or_statute = '${law_or_statute}', chapter = '${chapter}', section = '${section}', textSearch1 = '${textSearch1}', textSearch2 = '${textSearch2}', file = '${file}' WHERE id = ${id}`;
+      let update = `UPDATE statutes SET law_or_statute = '${law_or_statute}', chapter = '${chapter}', section = '${section}', textSearch1 = '${textSearch1}', textSearch2 = '${textSearch2}', file = '${filePath}' WHERE id = ${id}`;
 
-    db.then((conn) => {
-      conn.query(update, (err, result) => {
-        if (err) {
-          return next(new BadRequestResponse(err, 400));
-        } else {
+      db.then((conn) => {
+        conn.query(update, (err, result) => {
+          if (err) {
+            return next(new BadRequestResponse(err.message, 400));
+          }
           return res.send(
             new OkResponse("Statute has been updated successfully", 200),
           );
-        }
+        });
       });
-    });
+    } else {
+      let update = `UPDATE statutes SET law_or_statute = '${law_or_statute}', chapter = '${chapter}', section = '${section}', textSearch1 = '${textSearch1}', textSearch2 = '${textSearch2}', file = '${file}' WHERE id = ${id}`;
+
+      db.then((conn) => {
+        conn.query(update, (err, result) => {
+          if (err) {
+            return next(new BadRequestResponse(err, 400));
+          } else {
+            return res.send(
+              new OkResponse("Statute has been updated successfully", 200),
+            );
+          }
+        });
+      });
+    }
+  } catch (e) {
+    return next(new BadRequestResponse(e, 400));
   }
 };
 const searchStatutes = (req, res, next) => {
