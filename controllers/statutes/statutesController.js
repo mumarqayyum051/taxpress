@@ -2,7 +2,8 @@ const express = require("express");
 
 const router = express.Router();
 var multer = require("../../utilities/multer");
-var cpUpload = multer.array("file", 1);
+
+var cpUpload = multer.single("file");
 const {
   addStatutes,
   searchStatutes,
@@ -13,7 +14,7 @@ const {
   deleteStatute,
 } = require("./statutesService");
 
-router.post("/addStatutes", addStatutes);
+router.post("/addStatutes", cpUpload, addStatutes);
 router.put("/editStatute/:id", editStatutesById);
 router.post("/searchStatutes", searchStatutes);
 router.get("/getAllStatutes", getAllStatutes);
