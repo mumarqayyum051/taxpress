@@ -4,7 +4,7 @@ const path = require("path");
 var base64ToFile = require("base64-to-file");
 
 const add = (req, res, next) => {
-  let { word, meaning, sld, file } = req.body || req.body.dictionary;
+  let { word, meaning, sld } = req.body || req.body.dictionary;
 
   if (!word || !meaning || !sld) {
     return next(new BadRequestResponse("Please fill all the fields"));

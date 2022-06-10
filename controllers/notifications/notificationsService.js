@@ -12,7 +12,6 @@ const createNotification = async (req, res, next) => {
     year,
     dated,
     law_or_statute_id,
-    file,
   } = req.body || req.body.notification;
 
   if (
