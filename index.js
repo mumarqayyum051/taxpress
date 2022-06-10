@@ -34,7 +34,11 @@ app.use(
 );
 app.use(
   "/api/ordinance",
-  require("./controllers/ordinance/ordinanceController"),
+  require("./controllers/ordinance2/ordinanceController"),
+);
+app.use(
+  "/api/ordinanceDetail",
+  require("./controllers/ordinanceDetail/ordinanceDetailController"),
 );
 app.use("/api/team", require("./controllers/team/teamController"));
 app.use("/api/insights", require("./controllers/insights/insightsController"));
