@@ -70,7 +70,22 @@ const deleteRegistrationServiceType = (req, res, next) => {
     return next(new BadRequestResponse(err.message, 400));
   });
 };
+
+const getAllRegistrationServiceTypes = (req, res, next) => {
+  const query = `Select registration_service_type.*,registration_services.title as service from  registration_service_type left join registration_services on  registration_service_type.registration_service_id = registration_services.id`;
+  db.then((conn) => {
+    conn.query(query, (err, result) => {
+      if (err) {
+        return next(new BadRequestResponse(err.message, 400));
+      }
+      return next(new OkResponse(result, 200));
+    });
+  }).catch((err) => {
+    return next(new BadRequestResponse(err.message, 400));
+  });
+};
 module.exports = {
   createRegistrationServiceType,
   deleteRegistrationServiceType,
+  getAllRegistrationServiceTypes,
 };

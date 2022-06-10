@@ -7,9 +7,11 @@ const {
   addInsight,
   getAllInsights,
   getTopInsights,
+  deleteInsight,
 } = require("./insightsService");
 
 router.post("/addInsight", cpUpload, addInsight);
 router.get("/getAllInsights", getAllInsights);
 router.get("/getTopInsights", getTopInsights);
+router.delete("/deleteInsight/:id", deleteInsight);
 module.exports = router;

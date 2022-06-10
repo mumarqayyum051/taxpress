@@ -8,9 +8,11 @@ const {
   addOrdinanceDetail,
   getOrdinanceDetail,
   deleteOrdinanceDetail,
+  getOrdinanceDetailById,
 } = require("./ordinanceDetailService");
 
 router.post("/addOrdinanceDetail", cpUpload, addOrdinanceDetail);
 router.get("/getOrdinanceDetail", getOrdinanceDetail);
 router.delete("/deleteOrdinanceDetail/:id", deleteOrdinanceDetail);
+router.get("/getOrdinanceDetailById/:id", getOrdinanceDetailById);
 module.exports = router;

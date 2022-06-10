@@ -94,8 +94,22 @@ const getServices = (req, res, next) => {
     return next(new BadRequestResponse(e, 400));
   });
 };
+const getAllServices = (req, res, next) => {
+  db.then((conn) => {
+    let query = `Select * from registration_services`;
+    conn.query(query, (err, result) => {
+      if (err) {
+        return next(new BadRequestResponse(err.message, 400));
+      }
+      return next(new OkResponse(result, 200));
+    });
+  }).catch((e) => {
+    return next(new BadRequestResponse(e, 400));
+  });
+};
 module.exports = {
   createService,
   deleteSerivce,
   getServices,
+  getAllServices,
 };

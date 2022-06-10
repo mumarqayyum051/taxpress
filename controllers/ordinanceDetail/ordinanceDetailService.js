@@ -55,8 +55,27 @@ const deleteOrdinanceDetail = (req, res, next) => {
     });
   });
 };
+
+const getOrdinanceDetailById = (req, res, next) => {
+  const id = req.params.id;
+  if (!id) {
+    return next(new BadRequestResponse("Please provide an id", 400));
+  }
+  let query = `Select * from ordinance_details where ordinance_id = ${id}`;
+  db.then((conn) => {
+    conn.query(query, (err, result) => {
+      if (err) {
+        return next(new BadRequestResponse(err.message, 400));
+      }
+      return next(new OkResponse(result, 200));
+    });
+  }).catch((err) => {
+    return next(new BadRequestResponse(err.message, 400));
+  });
+};
 module.exports = {
   addOrdinanceDetail,
   getOrdinanceDetail,
   deleteOrdinanceDetail,
+  getOrdinanceDetailById,
 };

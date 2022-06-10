@@ -50,8 +50,26 @@ const getTopInsights = (req, res, next) => {
     });
   });
 };
+
+const deleteInsight = (req, res, next) => {
+  const id = req.params.id;
+  if (!id) {
+    return next(new BadRequestResponse("Please provide an id"));
+  }
+  const query = `DELETE FROM research_and_insight WHERE id = ${id}`;
+
+  db.then((conn) => {
+    conn.query(query, (err, result) => {
+      if (err) {
+        return next(new BadRequestResponse(err));
+      }
+      return next(new OkResponse("Insight has been deleted"));
+    });
+  });
+};
 module.exports = {
   addInsight,
   getAllInsights,
   getTopInsights,
+  deleteInsight,
 };

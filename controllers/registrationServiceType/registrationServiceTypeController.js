@@ -7,6 +7,7 @@ var cpUpload = multer.single("file");
 const {
   createRegistrationServiceType,
   deleteRegistrationServiceType,
+  getAllRegistrationServiceTypes,
 } = require("./registrationServiceTypeService");
 
 router.post(
@@ -19,4 +20,5 @@ router.delete(
   "/deleteRegistrationServiceType/:id",
   deleteRegistrationServiceType,
 );
+router.get("/getAllRegistrationServiceTypes", getAllRegistrationServiceTypes);
 module.exports = router;
