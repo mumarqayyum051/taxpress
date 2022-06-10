@@ -29,7 +29,8 @@ const addOrdinanceDetail = (req, res, next) => {
 };
 
 const getOrdinanceDetail = (req, res, next) => {
-  let query = `Select * from ordinance_details where ordinance_id`;
+  let query = `Select ordinance_details.*, ordinance.detail from ordinance_details  left join ordinance
+  on ordinance_details.ordinance_id = ordinance.id`;
   db.then((conn) => {
     conn.query(query, (err, result) => {
       if (err) {
@@ -50,7 +51,7 @@ const deleteOrdinanceDetail = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return next(new OkResponse("Ordinance has been deleted", 200));
+      return next(new OkResponse("Ordinance detail has been deleted", 200));
     });
   });
 };
