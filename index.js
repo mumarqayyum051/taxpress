@@ -42,5 +42,17 @@ app.use(
 );
 app.use("/api/team", require("./controllers/team/teamController"));
 app.use("/api/insights", require("./controllers/insights/insightsController"));
+app.use(
+  "/api/registrationServices",
+  require("./controllers/registrationServices/registrationServiceController"),
+);
+app.use(
+  "/api/registrationServiceType",
+  require("./controllers/registrationServiceType/registrationServiceTypeController"),
+);
+app.use(
+  "/api/registrationServiceDetail",
+  require("./controllers/registrationServiceDetail/registrationServiceDetailConroller"),
+);
 
 app.use(httpResponse.Middleware);
