@@ -33,16 +33,34 @@ const deleteSerivce = (req, res, next) => {
   if (!id) {
     return next(new BadRequestResponse("Please provide an id", 400));
   }
-  let query = `Delete from registration_services where id = ${id}`;
   db.then((conn) => {
-    conn.query(query, (err, result) => {
+    Promise.all([
+      new Promise((resolve, reject) => {
+        let query = `Delete from registration_services where id = ${id}`;
+        conn.query(query, (err, result) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(result);
+        });
+      }),
+      new Promise((resolve, reject) => {
+        const query = `Delete from registration_service_type where registration_service_id = ${id}`;
+      }),
+      new Promise((resolve, reject) => {
+        const query = `Delete from registration_service_details where registration_service_id = ${id}`;
+      }),
+    ]).then((err, result) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return next(new OkResponse("Service has been deleted", 200));
+      return next(
+        new OkResponse(
+          "Service and its corresponding childs have been deleted ",
+          200,
+        ),
+      );
     });
-  }).catch((err) => {
-    return next(new BadRequestResponse(err.message, 400));
   });
 };
 
