@@ -60,7 +60,7 @@ const deleteSerivce = (req, res, next) => {
 };
 
 const getAllServices = (req, res, next) => {
-  const query = `Select * from registration_service_details`;
+  const query = `Select registration_service_details.*, registration_services.title as service, registration_service_type.title as subService from registration_service_details left join registration_services on  registration_service_details.registration_service_id = registration_services.id left join registration_service_type on  registration_service_details.registration_type_id = registration_service_type.id`;
   db.then((conn) => {
     conn.query(query, (err, result) => {
       if (err) {

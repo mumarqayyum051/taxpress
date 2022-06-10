@@ -8,7 +8,7 @@ const {
   createServiceDetail,
   deleteSerivce,
   getAllServices,
-} = require("./registrationSerivceService");
+} = require("./registrationSerivceDetailService");
 
 router.post("/createServiceDetail", cpUpload, createServiceDetail);
 router.get("/getAllServices", getAllServices);
