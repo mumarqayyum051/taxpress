@@ -21,6 +21,7 @@ const addCase = (req, res, next) => {
     journals,
     appellant_or_opponent,
     principleOfCaseLaws,
+    shortParagraph,
   } = req.body || req.body.case;
   if (
     !year_or_vol ||
@@ -39,7 +40,8 @@ const addCase = (req, res, next) => {
     !lawyer ||
     !appellant_or_opponent ||
     !principleOfCaseLaws ||
-    !journals
+    !journals ||
+    !shortParagraph
   ) {
     return res
       .status(403)
@@ -70,6 +72,9 @@ const addCase = (req, res, next) => {
     if (lawyer) {
       lawyer = lawyer.replace(/'/g, "\\'");
     }
+    if (shortParagraph) {
+      shortParagraph = shortParagraph.replace(/'/g, "\\'");
+    }
     if (appellant_or_opponent) {
       appellant_or_opponent = appellant_or_opponent.replace(/'/g, "\\'");
     }
@@ -85,7 +90,7 @@ const addCase = (req, res, next) => {
 
   const filePath = req?.file?.path?.split("\\").join("/");
 
-  const query = `INSERT INTO cases ( year_or_vol, pageNo, month, law_or_statute_id, section, section2, court, caseNo, dated, textSearch1, textSearch2, phraseSearch, judge, lawyer, appellant_or_opponent, principleOfCaseLaws,journals, file) VALUES ('${year_or_vol}', '${pageNo}', '${month}', '${law_or_statute_id}', '${section}', '${section2}', '${court}', '${caseNo}', '${dated}', '${textSearch1}', '${textSearch2}', '${phraseSearch}', '${judge}', '${lawyer}', '${appellant_or_opponent}', '${principleOfCaseLaws}', '${journals}', '${filePath}')`;
+  const query = `INSERT INTO cases ( year_or_vol, pageNo, month, law_or_statute_id, section, section2, court, caseNo, dated, textSearch1, textSearch2, phraseSearch, judge, lawyer, appellant_or_opponent, principleOfCaseLaws,shortParagraph,journals, file) VALUES ('${year_or_vol}', '${pageNo}', '${month}', '${law_or_statute_id}', '${section}', '${section2}', '${court}', '${caseNo}', '${dated}', '${textSearch1}', '${textSearch2}', '${phraseSearch}', '${judge}', '${lawyer}', '${appellant_or_opponent}', '${principleOfCaseLaws}','${shortParagraph}', '${journals}', '${filePath}')`;
   console.log(query);
   db.then((conn) => {
     conn.query(query, (err, result) => {
@@ -117,6 +122,7 @@ const updateCase = (req, res, next) => {
     journals,
     appellant_or_opponent,
     principleOfCaseLaws,
+    shortParagraph,
     file,
   } = req.body || req.body.case;
 
@@ -142,7 +148,8 @@ const updateCase = (req, res, next) => {
     !lawyer ||
     !appellant_or_opponent ||
     !principleOfCaseLaws ||
-    !journals
+    !journals ||
+    !shortParagraph
   ) {
     return res
       .status(403)
@@ -195,6 +202,9 @@ const updateCase = (req, res, next) => {
           if (journals) {
             journals = journals.replace(/'/g, "\\'");
           }
+          if (shortParagraph) {
+            shortParagraph = shortParagraph.replace(/'/g, "\\'");
+          }
         } catch (err) {
           return next(new BadRequestResponse(err, 400));
         }
@@ -215,7 +225,7 @@ const updateCase = (req, res, next) => {
             });
           });
         } else {
-          let update = `UPDATE cases SET year_or_vol = '${year_or_vol}', pageNo = '${pageNo}', month = '${month}', law_or_statute_id = '${law_or_statute_id}', section = '${section}', section2 = '${section2}', court = '${court}', caseNo = '${caseNo}', dated = '${dated}', textSearch1 = '${textSearch1}', textSearch2 = '${textSearch2}', phraseSearch = '${phraseSearch}', judge = '${judge}', lawyer = '${lawyer}', appellant_or_opponent = '${appellant_or_opponent}', principleOfCaseLaws = '${principleOfCaseLaws}', journals = '${journals}', file = '${file}' WHERE id = '${id}'`;
+          let update = `UPDATE cases SET year_or_vol = '${year_or_vol}', pageNo = '${pageNo}', month = '${month}', law_or_statute_id = '${law_or_statute_id}', section = '${section}', section2 = '${section2}', court = '${court}', caseNo = '${caseNo}', dated = '${dated}', textSearch1 = '${textSearch1}', textSearch2 = '${textSearch2}', phraseSearch = '${phraseSearch}', judge = '${judge}', lawyer = '${lawyer}', appellant_or_opponent = '${appellant_or_opponent}', principleOfCaseLaws = '${principleOfCaseLaws}', journals = '${journals}',shortParagraph='${shortParagraph}' ,file = '${file}' WHERE id = '${id}'`;
 
           db.then((conn) => {
             conn.query(update, (err, result) => {
@@ -254,6 +264,7 @@ const searchCase = (req, res, next) => {
     journals,
     appellant_or_opponent,
     principleOfCaseLaws,
+    shortParagraph,
   } = req.body || req.body.case;
   if (!req.body) {
     return res
@@ -268,7 +279,10 @@ const searchCase = (req, res, next) => {
     query += ` pageNo LIKE '%${pageNo}%' OR`;
   }
   if (month) {
-    query += ` month LIKE'%${month}%' OR`;
+    query += ` month LIKE '%${month}%' OR`;
+  }
+  if (shortParagraph) {
+    query += ` shortParagraph LIKE '%${shortParagraph}%' OR`;
   }
   if (law_or_statute_id) {
     query += ` law_or_statute_id LIKE '%${law_or_statute_id}%' OR`;

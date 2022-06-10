@@ -1,39 +1,39 @@
-const db = require('../../db');
-const bcrypt = require('bcrypt');
-const passport = require('passport');
-const JWT = require('jsonwebtoken');
-require('../../middlewares/passport')(passport);
+const db = require("../../db");
+const bcrypt = require("bcrypt");
+const passport = require("passport");
+const JWT = require("jsonwebtoken");
+require("../../middlewares/passport")(passport);
 
-require('dotenv').config();
+require("dotenv").config();
 
 let {
   OkResponse,
   BadRequestResponse,
   UnauthorizedResponse,
-} = require('express-http-response');
+} = require("express-http-response");
 const {
   sendEmailOTPVerificationCode,
-} = require('../../utilities/emailService');
+} = require("../../utilities/emailService");
 
 const register = async (req, res, next) => {
   const { username, email, address, password } = req.body.user || req.body;
   if (!username || !email || !address || !password) {
-    return next(new BadRequestResponse('Please fill all the fields'));
+    return next(new BadRequestResponse("Please fill all the fields"));
   }
   db.then((conn) => {
-    db.query(
+    conn.query(
       `SELECT * FROM users WHERE email = '${email}'`,
       async (err, result) => {
         if (err) {
           return res
             .status(400)
-            .send(new BadRequestResponse('Something went wrong'));
+            .send(new BadRequestResponse("Something went wrong"));
         }
 
         if (result.length) {
           return res
             .status(400)
-            .send(new BadRequestResponse('User already exists'));
+            .send(new BadRequestResponse("User already exists"));
         }
 
         const { OTP, OTPExpiry } = setOTP();
@@ -47,11 +47,11 @@ const register = async (req, res, next) => {
             return res.status(400).send(new BadRequestResponse(err));
           } else {
             return res.send(
-              new OkResponse('User Registered Successfully', 200)
+              new OkResponse("User Registered Successfully", 200),
             );
           }
         });
-      }
+      },
     );
   });
 };
@@ -88,7 +88,7 @@ const verifyOTP = (req, res, next) => {
         return next(new BadRequestResponse(err));
       }
       if (result.length === 0) {
-        return res.send(new UnauthorizedResponse('Invalid OTP or Expired'));
+        return res.send(new UnauthorizedResponse("Invalid OTP or Expired"));
       }
       if (result.length > 0) {
         const query = `UPDATE users SET otp = '', otp_expiry = '', isEmailVerified = TRUE, isOTPVerified = TRUE WHERE email = '${email}'`;
@@ -97,7 +97,7 @@ const verifyOTP = (req, res, next) => {
           if (err) {
             return next(new BadRequestResponse(err));
           }
-          return res.send(new OkResponse('OTP Verified'));
+          return res.send(new OkResponse("OTP Verified"));
         });
       }
     });
@@ -106,7 +106,7 @@ const verifyOTP = (req, res, next) => {
 
 const login = (req, res, next) => {
   passport.authenticate(
-    'local',
+    "local",
     { session: false },
     function (err, user, info) {
       if (err) {
@@ -123,7 +123,7 @@ const login = (req, res, next) => {
         delete user?.isOTPVerified;
         res.send(new OkResponse({ ...user, token: token }, 200));
       }
-    }
+    },
   )(req, res, next);
 };
 
@@ -155,9 +155,9 @@ const adminLogin = (req, res, next) => {
             } else {
               res
                 .status(401)
-                .send(new UnauthorizedResponse('Invalid Password', 401));
+                .send(new UnauthorizedResponse("Invalid Password", 401));
             }
-          }
+          },
         );
       }
     });
@@ -167,7 +167,7 @@ const setOTP = () => {
   const OTP = Math.floor(1000 + Math.random() * 9000);
   const date = new Date();
   const OTPExpiry = date.setMinutes(
-    date.getMinutes() + +process.env.OTP_EXPIRY_TIME
+    date.getMinutes() + +process.env.OTP_EXPIRY_TIME,
   );
   return { OTP, OTPExpiry };
 };

@@ -2,8 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 var multer = require("../../utilities/multer");
-var cpUpload = multer.array("file", 1);
-
+var cpUpload = multer.single("file");
 const {
   createBlog,
   getAllBlogs,
@@ -12,13 +11,13 @@ const {
   editBlogById,
 } = require("./blogsService");
 
-router.post("/createBlog", createBlog);
+router.post("/createBlog", cpUpload, createBlog);
 
 router.get("/getAllBlogs", getAllBlogs);
 
 router.get("/getBlogById/:blogId", getBlogById);
 
-router.put("/editBlogById/:blogId", editBlogById);
+router.put("/editBlogById/:blogId", cpUpload, editBlogById);
 
 router.delete("/deleteBlogById/:blogId", deleteBlogById);
 
