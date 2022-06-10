@@ -2,8 +2,8 @@ const { BadRequestResponse, OkResponse } = require("express-http-response");
 const db = require("../../db");
 
 const createService = (req, res, next) => {
-  let { title, description } = req.body || req.body.service;
-  if (!title || !description) {
+  let { title, description, superCategory } = req.body || req.body.service;
+  if (!title || !description || !superCategory) {
     return next(new BadRequestResponse("Please fill all the fields", 400));
   }
   try {
@@ -17,7 +17,7 @@ const createService = (req, res, next) => {
     return next(new BadRequestResponse(e, 400));
   }
   let filePath = req?.file?.path?.split("\\")?.join("/");
-  let query = `Insert into registration_services ( title, description, file ) values('${title}', '${description}', '${filePath}')`;
+  let query = `Insert into registration_services ( title, description,superCategory, file ) values('${title}', '${description}', '${superCategory}','${filePath}')`;
   db.then((conn) => {
     conn.query(query, (err, result) => {
       if (err) {
@@ -77,7 +77,25 @@ const deleteSerivce = (req, res, next) => {
   });
 };
 
+const getServices = (req, res, next) => {
+  const superCategory = req.params.superCategory;
+  if (!superCategory) {
+    return next(new BadRequestResponse("Please provide a superCategory", 400));
+  }
+  db.then((conn) => {
+    let query = `Select * from registration_services where superCategory = '${superCategory}'`;
+    conn.query(query, (err, result) => {
+      if (err) {
+        return next(new BadRequestResponse(err.message, 400));
+      }
+      return next(new OkResponse(result, 200));
+    });
+  }).catch((e) => {
+    return next(new BadRequestResponse(e, 400));
+  });
+};
 module.exports = {
   createService,
   deleteSerivce,
+  getServices,
 };
