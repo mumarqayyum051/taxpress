@@ -15,11 +15,11 @@ const createServiceDetail = (req, res, next) => {
     return next(new BadRequestResponse("Please fill all the fields", 400));
   }
 
-  const allowedSuperCategories = ["Oversease", "Normal"];
+  const allowedSuperCategories = ["Overseas", "Normal"];
   if (!allowedSuperCategories.includes(superCategory)) {
     return next(
       new BadRequestResponse(
-        "Can't create service type other than Oversease and Normal",
+        "Can't create service type other than Overseas and Normal",
         400,
       ),
     );
@@ -119,23 +119,23 @@ const getAllServices = (req, res, next) => {
   });
 };
 
-// const getDetailedServicesById = (req, res, next) => {
-//   const id = req.params.id;
-//   if (!id) {
-//     return next(new BadRequestResponse("Please provide Id"));
-//   }
-//   db.then((conn) => {
-//     const query = `select * from registration_service_details where registration_type_id = ${id}`;
-//     conn.query(query, (err, result) => {
-//       if (err) {
-//         return next(new BadRequestResponse(err.message, 400));
-//       }
-//       return next(new OkResponse(result, 200));
-//     });
-//   }).catch((err) => {
-//     return next(new BadRequestResponse(err.message, 400));
-//   });
-// };
+const getDetailedServicesById = (req, res, next) => {
+  const id = req.params.id;
+  if (!id) {
+    return next(new BadRequestResponse("Please provide Id"));
+  }
+  db.then((conn) => {
+    const query = `select * from registration_service_details where typeId = ${id}`;
+    conn.query(query, (err, result) => {
+      if (err) {
+        return next(new BadRequestResponse(err.message, 400));
+      }
+      return next(new OkResponse(result, 200));
+    });
+  }).catch((err) => {
+    return next(new BadRequestResponse(err.message, 400));
+  });
+};
 
 const getDetailByType = (req, res, next) => {
   const typeId = req.params.typeId;
@@ -158,9 +158,41 @@ const getDetailByType = (req, res, next) => {
     return next(new BadRequestResponse(err.message, 400));
   });
 };
+
+const getAllServicesByType = (req, res, next) => {
+  const superCategory = req.params.superCategory;
+  if (!superCategory) {
+    return next(new BadRequestResponse("Please provide type", 400));
+  }
+
+  const allowedSuperCategories = ["Overseas", "Normal"];
+
+  if (!allowedSuperCategories.includes(superCategory)) {
+    return next(
+      new BadRequestResponse(
+        "Can't create service type other than Overseas and Normal",
+        400,
+      ),
+    );
+  }
+  db.then((conn) => {
+    const query = `select * from registration_service_details where superCategory = '${superCategory}'`;
+
+    conn.query(query, (err, result) => {
+      if (err) {
+        return next(new BadRequestResponse(err.message, 400));
+      }
+      return next(new OkResponse(result, 200));
+    });
+  }).catch((err) => {
+    return next(new BadRequestResponse(err.message, 400));
+  });
+};
 module.exports = {
   createServiceDetail,
   deleteSerivce,
   getAllServices,
   getDetailByType,
+  getDetailedServicesById,
+  getAllServicesByType,
 };

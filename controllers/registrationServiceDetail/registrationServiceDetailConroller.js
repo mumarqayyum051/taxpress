@@ -9,12 +9,15 @@ const {
   deleteSerivce,
   getAllServices,
   getDetailByType,
+  getDetailedServicesById,
+  getAllServicesByType,
 } = require("./registrationSerivceDetailService");
 
 router.post("/createServiceDetail", cpUpload, createServiceDetail);
 router.get("/getAllServices", getAllServices);
+router.get("/getAllServicesByType/:superCategory", getAllServicesByType);
 router.delete("/deleteService/:id", deleteSerivce);
-// router.get("/getDetailedServicesById", getDetailedServicesById);
+router.get("/getDetailedServicesById/:id", getDetailedServicesById);
 router.get("/getDetailByType/:superCategory/:typeId/:id", getDetailByType);
 
 module.exports = router;

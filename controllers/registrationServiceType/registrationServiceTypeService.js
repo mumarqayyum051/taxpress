@@ -7,11 +7,11 @@ const createRegistrationServiceType = (req, res, next) => {
     return next(new BadRequestResponse("Please fill all the fields", 400));
   }
 
-  const allowedSuperCategories = ["Oversease", "Normal"];
+  const allowedSuperCategories = ["Overseas", "Normal"];
   if (!allowedSuperCategories.includes(superCategory)) {
     return next(
       new BadRequestResponse(
-        "Can't create service type other than Oversease and Normal",
+        "Can't create service type other than Overseas and Normal",
         400,
       ),
     );
@@ -63,44 +63,20 @@ const deleteRegistrationServiceType = (req, res, next) => {
     return next(new BadRequestResponse("Please provide an id", 400));
   }
   db.then((conn) => {
-    Promise.all([
-      new Promise((resolve, reject) => {
-        let query = `Delete from registration_service_type where id = ${id}`;
-        conn.query(query, (err, result) => {
-          if (err) {
-            return reject(err);
-          }
-          resolve(result);
-        });
-      }),
-      new Promise((resolve, reject) => {
-        const query = `Delete from registration_service_details where superCategorys = ${id}`;
-        conn.query(query, (err, result) => {
-          if (err) {
-            return reject(err);
-          }
-          resolve(result);
-        });
-      }),
-    ])
-      .then((result) => {
-        return next(
-          new OkResponse(
-            "Service type and its corresponding childs have been deleted",
-            200,
-          ),
-        );
-      })
-      .catch((e) => {
-        return next(new BadRequestResponse(e, 400));
-      });
+    const query = `Delete from registration_service_type where id = ${id}`;
+    conn.query(query, (err, result) => {
+      if (err) {
+        return next(new BadRequestResponse(err.message, 400));
+      }
+      return next(new OkResponse("Service type has been deleted", 200));
+    });
   }).catch((err) => {
     return next(new BadRequestResponse(err.message, 400));
   });
 };
 
 const getAllRegistrationServiceTypes = (req, res, next) => {
-  const query = `Select registration_service_type.*,registration_services.title as service, registration_services.id as serviceId from  registration_service_type left join registration_services on  registration_service_type.registration_service_id = registration_services.id`;
+  const query = `Select * from registration_service_type`;
   db.then((conn) => {
     conn.query(query, (err, result) => {
       if (err) {
@@ -133,7 +109,7 @@ const getTypesByServiceId = (req, res, next) => {
 
 const getTypesByServiceType = (req, res, next) => {
   const type = req.params.type;
-  const allowedTypes = ["Oversease", "Normal"];
+  const allowedTypes = ["Overseas", "Normal"];
   if (!type || !allowedTypes.includes(type)) {
     return next(new BadRequestResponse("Please provide a valid type", 400));
   }

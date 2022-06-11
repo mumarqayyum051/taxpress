@@ -50,46 +50,15 @@ const deleteSerivce = (req, res, next) => {
     return next(new BadRequestResponse("Please provide an id", 400));
   }
   db.then((conn) => {
-    Promise.all([
-      new Promise((resolve, reject) => {
-        let query = `Delete from registration_services where id = ${id}`;
-        conn.query(query, (err, result) => {
-          if (err) {
-            return reject(err);
-          }
-          resolve(result);
-        });
-      }),
-      new Promise((resolve, reject) => {
-        const query = `Delete from registration_service_type where registration_service_id = ${id}`;
-        conn.query(query, (err, result) => {
-          if (err) {
-            return reject(err);
-          }
-          resolve(result);
-        });
-      }),
-      new Promise((resolve, reject) => {
-        const query = `Delete from registration_service_details where registration_service_id = ${id}`;
-        conn.query(query, (err, result) => {
-          if (err) {
-            return reject(err);
-          }
-          resolve(result);
-        });
-      }),
-    ])
-      .then((result) => {
-        return next(
-          new OkResponse(
-            "Service and its corresponding childs have been deleted ",
-            200,
-          ),
-        );
-      })
-      .catch((e) => {
-        return next(new BadRequestResponse(e, 400));
-      });
+    const query = `Delete from registration_services where id = ${id}`;
+    conn.query(query, (err, result) => {
+      if (err) {
+        return next(new BadRequestResponse(err.message, 400));
+      }
+      return next(new OkResponse("Service has been deleted", 200));
+    });
+  }).catch((e) => {
+    return next(new BadRequestResponse(e, 400));
   });
 };
 
