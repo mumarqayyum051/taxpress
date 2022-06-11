@@ -10,6 +10,7 @@ const {
   createNotificationType,
   getAllNotifications,
   deleteNotificationTypeById,
+  deleteNotification,
 } = require("./notificationsService");
 
 router.post("/createNotification", cpUpload, createNotification);
@@ -19,4 +20,5 @@ router.post("/createNotificationType", createNotificationType);
 router.get("/getNotificationTypes", getNotificationTypes);
 router.get("/getAllNotifications", getAllNotifications);
 router.delete("/deleteNotificationType/:id", deleteNotificationTypeById);
+router.delete("/deleteNotification/:id", deleteNotification);
 module.exports = router;

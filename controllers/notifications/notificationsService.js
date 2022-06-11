@@ -157,6 +157,19 @@ const deleteNotificationTypeById = (req, res, next) => {
     });
   });
 };
+
+const deleteNotification = (req, res, next) => {
+  const { id } = req.params;
+  const query = `DELETE FROM notifications WHERE id = ${id}`;
+  db.then((conn) => {
+    conn.query(query, (err, result) => {
+      if (err) {
+        return next(new BadRequestResponse(err));
+      }
+      return res.send(new OkResponse("Notification deleted successfully"));
+    });
+  });
+};
 module.exports = {
   createNotification,
   searchNotifications,
@@ -164,4 +177,5 @@ module.exports = {
   getNotificationTypes,
   getAllNotifications,
   deleteNotificationTypeById,
+  deleteNotification,
 };

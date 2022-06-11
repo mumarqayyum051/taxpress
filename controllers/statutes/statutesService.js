@@ -4,7 +4,7 @@ const path = require("path");
 var base64ToFile = require("base64-to-file");
 
 const addStatutes = (req, res, next) => {
-  let { law_or_statute, chapter, section, textSearch1, textSearch2, file } =
+  let { law_or_statute, chapter, section, textSearch1, textSearch2 } =
     req.body || req.body.statutes;
   console.log(req.body);
 
@@ -15,25 +15,31 @@ const addStatutes = (req, res, next) => {
   }
 
   try {
-    law_or_statute = law_or_statute.replace(/'/g, "\\'");
-    chapter = chapter.replace(/'/g, "\\'");
-    section = section.replace(/'/g, "\\'");
-    textSearch1 = textSearch1.replace(/'/g, "\\'");
-    textSearch2 = textSearch2.replace(/'/g, "\\'");
+    try {
+      law_or_statute = law_or_statute.replace(/'/g, "\\'");
+      chapter = chapter.replace(/'/g, "\\'");
+      section = section.replace(/'/g, "\\'");
+      textSearch1 = textSearch1.replace(/'/g, "\\'");
+      textSearch2 = textSearch2.replace(/'/g, "\\'");
+    } catch (e) {
+      return next(new BadRequestResponse(e, 400));
+    }
+    let filePath = req?.file?.path?.split("\\").join("/");
+    const query = `INSERT INTO statutes (law_or_statute, chapter, section, textSearch1, textSearch2, file) VALUES ('${law_or_statute}', '${chapter}', '${section}', '${textSearch1}', '${textSearch2}', '${filePath}')`;
+
+    db.then((conn) => {
+      conn.query(query, (err, result) => {
+        if (err) {
+          return next(new BadRequestResponse(err.message, 400));
+        }
+        return res.send(new OkResponse("Statutes has been created", 200));
+      });
+    }).catch((err) => {
+      return next(new BadRequestResponse(err, 400));
+    });
   } catch (e) {
     return next(new BadRequestResponse(e, 400));
   }
-  let filePath = req.file.path.split("\\").join("/");
-  const query = `INSERT INTO statutes (law_or_statute, chapter, section, textSearch1, textSearch2, file) VALUES ('${law_or_statute}', '${chapter}', '${section}', '${textSearch1}', '${textSearch2}', '${filePath}')`;
-
-  db.then((conn) => {
-    conn.query(query, (err, result) => {
-      if (err) {
-        return next(new BadRequestResponse(err.message, 400));
-      }
-      return res.send(new OkResponse("Statutes has been created", 200));
-    });
-  });
 };
 
 const editStatutesById = (req, res, next) => {
