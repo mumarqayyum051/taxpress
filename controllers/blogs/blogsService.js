@@ -3,9 +3,10 @@ const db = require("../../db");
 const path = require("path");
 var base64ToFile = require("base64-to-file");
 const createBlog = (req, res, next) => {
-  let { title, paragraph, short_paragraph, date } = req.body.blog || req.body;
+  let { title, paragraph, short_paragraph, author, date } =
+    req.body.blog || req.body;
 
-  if (!title || !paragraph || !short_paragraph || !date) {
+  if (!title || !paragraph || !short_paragraph || !author || !date) {
     return next(new BadRequestResponse("Please fill all the fields", 400));
   }
   try {
@@ -17,7 +18,7 @@ const createBlog = (req, res, next) => {
   }
 
   const filePath = req?.file?.path?.split("\\")?.join("/");
-  const query = `INSERT INTO blogs  (title, short_paragraph, paragraph, date, file) VALUES ('${title}','${short_paragraph}', '${paragraph}', '${date}', '${filePath}')`;
+  const query = `INSERT INTO blogs  (title, short_paragraph, paragraph, date, author,file) VALUES ('${title}','${short_paragraph}', '${paragraph}', '${date}', '${author}', '${filePath}')`;
 
   db.then((conn) => {
     conn.query(query, (err, result) => {
@@ -71,9 +72,9 @@ const deleteBlogById = (req, res, next) => {
 
 const editBlogById = (req, res, next) => {
   const { blogId } = req.params;
-  let { title, paragraph, file } = req.body.blog || req.body;
+  let { title, paragraph, file, author } = req.body.blog || req.body;
 
-  if (!title || !paragraph) {
+  if (!title || !paragraph || !author) {
     return next(new BadRequestResponse("Please fill all the fields", 400));
   }
   try {
@@ -85,7 +86,7 @@ const editBlogById = (req, res, next) => {
 
   if (!file?.includes("upload")) {
     const filePath = req?.file?.path?.split("\\")?.join("/");
-    const query = `UPDATE blogs SET title = '${title}', paragraph = '${paragraph}', file = '${filePath}' WHERE id = ${blogId}`;
+    const query = `UPDATE blogs SET title = '${title}', paragraph = '${paragraph}', file = '${filePath}', author = '${author}' WHERE id = ${blogId}`;
     db.then((conn) => {
       conn.query(query, (err, result) => {
         if (err) {
@@ -98,7 +99,7 @@ const editBlogById = (req, res, next) => {
       });
     });
   } else {
-    const query = `UPDATE blogs SET title = '${title}', paragraph = '${paragraph}' , file = '${file}'WHERE id = ${blogId}`;
+    const query = `UPDATE blogs SET title = '${title}', paragraph = '${paragraph}' , file = '${file}' , author = '${author}' WHERE id = ${blogId}`;
     db.then((conn) => {
       conn.query(query, (err, result) => {
         if (err) {

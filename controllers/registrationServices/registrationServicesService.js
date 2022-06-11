@@ -2,9 +2,25 @@ const { BadRequestResponse, OkResponse } = require("express-http-response");
 const db = require("../../db");
 
 const createService = (req, res, next) => {
-  let { title, description, superCategory } = req.body || req.body.service;
-  if (!title || !description || !superCategory) {
+  let { title, description, superCategory, serviceCategory } =
+    req.body || req.body.service;
+  if (!title || !description || !superCategory || !serviceCategory) {
     return next(new BadRequestResponse("Please fill all the fields", 400));
+  }
+  const allowedServices = ["registration_service", "incomeTax_service"];
+  if (!allowedServices.includes(serviceCategory)) {
+    return next(
+      new BadRequestResponse(
+        "Cannot create service other than Registration and Income Tax",
+        400,
+      ),
+    );
+  }
+  if (serviceCategory === "registration_service") {
+    serviceCategory = "Registration Service";
+  }
+  if (serviceCategory === "incomeTax_service") {
+    serviceCategory = "Income Tax Service";
   }
   try {
     if (title) {
@@ -17,7 +33,7 @@ const createService = (req, res, next) => {
     return next(new BadRequestResponse(e, 400));
   }
   let filePath = req?.file?.path?.split("\\")?.join("/");
-  let query = `Insert into registration_services ( title, description,superCategory, file ) values('${title}', '${description}', '${superCategory}','${filePath}')`;
+  let query = `Insert into registration_services ( title, description,superCategory,serviceCategory, file ) values('${title}', '${description}', '${superCategory}', '${serviceCategory}','${filePath}')`;
   db.then((conn) => {
     conn.query(query, (err, result) => {
       if (err) {

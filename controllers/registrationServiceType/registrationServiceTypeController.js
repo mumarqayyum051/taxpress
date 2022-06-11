@@ -8,6 +8,8 @@ const {
   createRegistrationServiceType,
   deleteRegistrationServiceType,
   getAllRegistrationServiceTypes,
+  getTypesByServiceId,
+  getTypesByServiceType,
 } = require("./registrationServiceTypeService");
 
 router.post(
@@ -20,5 +22,8 @@ router.delete(
   "/deleteRegistrationServiceType/:id",
   deleteRegistrationServiceType,
 );
+
+router.get("/getTypesByServiceId/:id", getTypesByServiceId);
 router.get("/getAllRegistrationServiceTypes", getAllRegistrationServiceTypes);
+router.get("/getTypesByServiceType/:type", getTypesByServiceType);
 module.exports = router;
