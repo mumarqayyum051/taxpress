@@ -308,6 +308,21 @@ const deleteAppointmentSlot = (req, res, next) => {
   });
 };
 
+const deleteAllAppointmentSlots = (req, res, next) => {
+  const query = `truncate appointment_slots`;
+  db.then((conn) => {
+    conn.query(query, (err, result) => {
+      if (err) {
+        return next(new BadRequestResponse(err.message, 400));
+      }
+      return next(
+        new OkResponse("All appointment slots have been deleted", 200),
+      );
+    });
+  }).catch((err) => {
+    return next(new BadRequestResponse(err.message, 400));
+  });
+};
 module.exports = {
   setAppointmentsTime,
   deleteAppointmentSchedule,
@@ -315,4 +330,5 @@ module.exports = {
   createAppoinmentSlot,
   getAppointmentSlotsByType,
   deleteAppointmentSlot,
+  deleteAllAppointmentSlots,
 };

@@ -10,6 +10,7 @@ const {
   createAppoinmentSlot,
   getAppointmentSlotsByType,
   deleteAppointmentSlot,
+  deleteAllAppointmentSlots,
 } = require("./appointmentsService");
 
 router.post("/setAppointmentsTime", cpUpload, setAppointmentsTime);
@@ -26,5 +27,7 @@ router.get(
 );
 
 router.delete("/deleteAppointmentSlot/:id", deleteAppointmentSlot);
+
+router.delete("/deleteAllAppointmentSlots", deleteAllAppointmentSlots);
 
 module.exports = router;
