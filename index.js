@@ -54,5 +54,9 @@ app.use(
   "/api/registrationServiceDetail",
   require("./controllers/registrationServiceDetail/registrationServiceDetailConroller"),
 );
+app.use(
+  "/api/appointments",
+  require("./controllers/appointments/appointmentsController"),
+);
 
 app.use(httpResponse.Middleware);
