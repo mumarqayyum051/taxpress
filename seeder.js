@@ -15,40 +15,20 @@ async function seeder() {
         bcrypt.hash("Asdf123", salt, function (err, hash) {
           connection
             .then((conn) => {
-              const admins = [
-                {
-                  id: 1,
-                  username: "admin",
-                  password: hash,
-                  email: "admin@gmail.com",
-                  user_role: "admin",
-                },
-                {
-                  id: 2,
-                  username: "admin2",
-                  password: hash,
-                  email: "admin2@gmail.com",
-                  user_role: "admin",
-                },
-                {
-                  id: 3,
-                  username: "admin3",
-                  password: hash,
-                  email: "admin3@gmail.com",
-                  user_role: "admin",
-                },
-              ];
-
               const _admins = [
                 [1, "admin", "admin@gmail.com", hash, "admin"],
                 [2, "admin2", "admin2@gmail.com", hash, "admin"],
-                [3, "admin3", "admin@3gmail.com", hash, "admin"],
+                [3, "admin3", "admin3@gmail.com", hash, "admin"],
               ];
 
-              conn.query(`INSERT INTO users SET ?`, _admins, (err, result) => {
-                if (err) reject(err);
-                resolve(result);
-              });
+              conn.query(
+                `INSERT INTO users(id, username, email, password, user_role) values ?`,
+                [_admins],
+                (err, result) => {
+                  if (err) reject(err);
+                  resolve(result);
+                },
+              );
             })
             .catch((err) => {
               reject(err);

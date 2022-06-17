@@ -244,7 +244,7 @@ const getAppointmentSlotsByDate = (req, res, next) => {
 const createAppoinmentSlot = (req, res, next) => {
   const { startTime, endTime, consultant, appointmentType } = req.body;
 
-  if (!startTime || !endTime || !consultant || !appointmentType) {
+  if (!startTime || !endTime || !appointmentType) {
     return next(
       new BadRequestResponse("Please provide all the required fields"),
     );

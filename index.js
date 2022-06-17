@@ -59,4 +59,9 @@ app.use(
   require("./controllers/appointments/appointmentsController"),
 );
 
+app.use(
+  "/api/backgrounds",
+  require("./controllers/background/backgroundController"),
+);
+
 app.use(httpResponse.Middleware);
