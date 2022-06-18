@@ -41,7 +41,7 @@ const addOrdinance = (req, res, next) => {
           if (err) {
             return next(new BadRequestResponse(err.message, 400));
           }
-          return res.send(new OkResponse(responses[type], 200));
+          return next(new OkResponse(responses[type], 200));
         });
       });
     },

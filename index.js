@@ -64,4 +64,11 @@ app.use(
   require("./controllers/background/backgroundController"),
 );
 
+app.use(
+  "/api/heroSection",
+  require("./controllers/heroSection/heroSectionController"),
+);
+
+app.use("/api/client", require("./controllers/client/clientController"));
+app.use("/api/aboutUs", require("./controllers/aboutUs/aboutUsController"));
 app.use(httpResponse.Middleware);

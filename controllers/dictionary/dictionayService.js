@@ -28,7 +28,7 @@ const add = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return res.send(new OkResponse("Word has been added to dictionary", 200));
+      return next(new OkResponse("Word has been added to dictionary", 200));
     });
   });
 };
@@ -64,7 +64,7 @@ const search = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return res.send(new OkResponse(result, 200));
+      return next(new OkResponse(result, 200));
     });
   });
 };
@@ -76,7 +76,7 @@ const getAllWords = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return res.send(new OkResponse(result, 200));
+      return next(new OkResponse(result, 200));
     });
   });
 };

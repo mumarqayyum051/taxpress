@@ -39,7 +39,7 @@ const createNotification = async (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err));
       }
-      return res.send(new OkResponse("Notification created successfully"));
+      return next(new OkResponse("Notification created successfully"));
     });
   });
 };
@@ -91,7 +91,7 @@ const searchNotifications = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err));
       }
-      return res.send(new OkResponse(result));
+      return next(new OkResponse(result));
     });
   });
 };
@@ -110,7 +110,7 @@ const createNotificationType = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err));
       }
-      return res.send(new OkResponse("Notification type created successfully"));
+      return next(new OkResponse("Notification type created successfully"));
     });
   });
 };
@@ -122,7 +122,7 @@ const getNotificationTypes = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err));
       }
-      return res.send(new OkResponse(result));
+      return next(new OkResponse(result));
     });
   });
 };
@@ -140,7 +140,7 @@ const getAllNotifications = (req, res, next) => {
         return next(new BadRequestResponse(err));
       }
 
-      return res.send(new OkResponse(result));
+      return next(new OkResponse(result));
     });
   });
 };
@@ -153,7 +153,7 @@ const deleteNotificationTypeById = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err));
       }
-      return res.send(new OkResponse("Notification type deleted successfully"));
+      return next(new OkResponse("Notification type deleted successfully"));
     });
   });
 };
@@ -166,7 +166,7 @@ const deleteNotification = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err));
       }
-      return res.send(new OkResponse("Notification deleted successfully"));
+      return next(new OkResponse("Notification deleted successfully"));
     });
   });
 };

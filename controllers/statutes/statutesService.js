@@ -32,7 +32,7 @@ const addStatutes = (req, res, next) => {
         if (err) {
           return next(new BadRequestResponse(err.message, 400));
         }
-        return res.send(new OkResponse("Statutes has been created", 200));
+        return next(new OkResponse("Statutes has been created", 200));
       });
     }).catch((err) => {
       return next(new BadRequestResponse(err, 400));
@@ -81,7 +81,7 @@ const editStatutesById = (req, res, next) => {
           if (err) {
             return next(new BadRequestResponse(err.message, 400));
           }
-          return res.send(
+          return next(
             new OkResponse("Statute has been updated successfully", 200),
           );
         });
@@ -94,7 +94,7 @@ const editStatutesById = (req, res, next) => {
           if (err) {
             return next(new BadRequestResponse(err, 400));
           } else {
-            return res.send(
+            return next(
               new OkResponse("Statute has been updated successfully", 200),
             );
           }
@@ -146,7 +146,7 @@ const searchStatutes = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return res.send(new OkResponse(result, 200));
+      return next(new OkResponse(result, 200));
     });
   });
 };
@@ -158,7 +158,7 @@ const getAllStatutes = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return res.send(new OkResponse(result, 200));
+      return next(new OkResponse(result, 200));
     });
   });
 };
@@ -170,7 +170,7 @@ const getStatutesOnly = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return res.send(new OkResponse(result, 200));
+      return next(new OkResponse(result, 200));
     });
   });
 };
@@ -183,7 +183,7 @@ const getStatuteById = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return res.send(new OkResponse(result, 200));
+      return next(new OkResponse(result, 200));
     });
   });
 };
@@ -195,7 +195,7 @@ const deleteStatute = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return res.send(new OkResponse("Statute deleted successfully", 200));
+      return next(new OkResponse("Statute deleted successfully", 200));
     });
   });
 };

@@ -25,7 +25,7 @@ const createBlog = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return res.send(new OkResponse("Blog has been created", 200));
+      return next(new OkResponse("Blog has been created", 200));
     });
   });
 };
@@ -92,7 +92,7 @@ const editBlogById = (req, res, next) => {
         if (err) {
           return next(new BadRequestResponse(err, 400));
         } else {
-          return res.send(
+          return next(
             new OkResponse("Blog has been updated successfully", 200),
           );
         }
@@ -105,7 +105,7 @@ const editBlogById = (req, res, next) => {
         if (err) {
           return next(new BadRequestResponse(err, 400));
         } else {
-          return res.send(
+          return next(
             new OkResponse("Blog has been updated successfully", 200),
           );
         }

@@ -46,9 +46,7 @@ const register = async (req, res, next) => {
           if (err) {
             return res.status(400).send(new BadRequestResponse(err));
           } else {
-            return res.send(
-              new OkResponse("User Registered Successfully", 200),
-            );
+            return next(new OkResponse("User Registered Successfully", 200));
           }
         });
       },
@@ -74,7 +72,7 @@ const register = async (req, res, next) => {
 //
 //       return next(new BadRequestResponse(err));
 //     } else {
-//       return res.send(new OkResponse("User Registered Successfully", 200));
+//       return next(new OkResponse("User Registered Successfully", 200));
 //     }
 //   });
 // };
@@ -88,7 +86,7 @@ const verifyOTP = (req, res, next) => {
         return next(new BadRequestResponse(err));
       }
       if (result.length === 0) {
-        return res.send(new UnauthorizedResponse("Invalid OTP or Expired"));
+        return next(new UnauthorizedResponse("Invalid OTP or Expired"));
       }
       if (result.length > 0) {
         const query = `UPDATE users SET otp = '', otp_expiry = '', isEmailVerified = TRUE, isOTPVerified = TRUE WHERE email = '${email}'`;
@@ -97,7 +95,7 @@ const verifyOTP = (req, res, next) => {
           if (err) {
             return next(new BadRequestResponse(err));
           }
-          return res.send(new OkResponse("OTP Verified"));
+          return next(new OkResponse("OTP Verified"));
         });
       }
     });
@@ -113,7 +111,7 @@ const login = (req, res, next) => {
         next(new BadRequestResponse(err));
       }
       if (!user) {
-        res.send(new UnauthorizedResponse(info.message, 401));
+        next(new UnauthorizedResponse(info.message, 401));
       } else {
         const token = generateToken(user.email, user.user_id);
         delete user.password;
@@ -121,7 +119,7 @@ const login = (req, res, next) => {
         delete user?.OTPExpiry;
         delete user?.isEmailVerified;
         delete user?.isOTPVerified;
-        res.send(new OkResponse({ ...user, token: token }, 200));
+        next(new OkResponse({ ...user, token: token }, 200));
       }
     },
   )(req, res, next);
@@ -151,7 +149,7 @@ const adminLogin = (req, res, next) => {
             if (_result) {
               const token = generateToken(email, result[0].id);
               delete result[0].password;
-              res.send(new OkResponse({ ...result[0], token: token }, 200));
+              next(new OkResponse({ ...result[0], token: token }, 200));
             } else {
               res
                 .status(401)
@@ -189,7 +187,7 @@ const generateToken = (email, id) => {
 
 const userContext = (req, res, next) => {
   //
-  res.send(req.user);
+  next(req.user);
 };
 
 module.exports = {

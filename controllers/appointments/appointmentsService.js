@@ -126,7 +126,7 @@ const setAppointmentsTime = (req, res, next) => {
                 });
               });
             }
-            return res.send(
+            return next(
               new OkResponse("Appointment slot has been created", 200),
             );
           });
@@ -173,9 +173,7 @@ const deleteAppointmentSchedule = (req, res, next) => {
         });
       }),
     ]).then((result) => {
-      return res.send(
-        new OkResponse("Appointment schedule has been deleted", 200),
-      );
+      return next(new OkResponse("Appointment schedule has been deleted", 200));
     });
   }).catch((e) => {});
 
@@ -186,7 +184,7 @@ const deleteAppointmentSchedule = (req, res, next) => {
         if (err) {
           return next(new BadRequestResponse(err.message, 400));
         }
-        return res.send(
+        return next(
           new OkResponse("Appointment schedule has been deleted", 200),
         );
       });
@@ -208,7 +206,7 @@ const getAppointmentSlots = (req, res, next) => {
         return next(new BadRequestResponse(err.message, 400));
       }
 
-      return res.send(new OkResponse(result, 200));
+      return next(new OkResponse(result, 200));
     });
   }).catch((err) => {
     return next(new BadRequestResponse(err.message, 400));
@@ -227,7 +225,7 @@ const getAppointmentSlotsByType = (req, res, next) => {
         return next(new BadRequestResponse(err.message, 400));
       }
 
-      return res.send(new OkResponse(result, 200));
+      return next(new OkResponse(result, 200));
     });
   }).catch((err) => {
     return next(new BadRequestResponse(err.message, 400));
@@ -246,7 +244,7 @@ const getAppointmentSlotsByDate = (req, res, next) => {
         return next(new BadRequestResponse(err.message, 400));
       }
 
-      return res.send(new OkResponse(result, 200));
+      return next(new OkResponse(result, 200));
     });
   }).catch((err) => {
     return next(new BadRequestResponse(err.message, 400));
@@ -284,9 +282,7 @@ const createAppoinmentSlot = (req, res, next) => {
           if (err) {
             return next(new BadRequestResponse(err.message, 400));
           }
-          return res.send(
-            new OkResponse("Appointment Created Successfully", 200),
-          );
+          return next(new OkResponse("Appointment Created Successfully", 200));
         });
       }).catch((err) => {
         return next(new BadRequestResponse(err.message, 400));
@@ -410,7 +406,7 @@ const bookeAppointmentSlot = (req, res, next) => {
         if (err) {
           return next(new BadRequestResponse(err.message, 400));
         }
-        return res.send(new OkResponse("Appointment Booked Successfully", 200));
+        return next(new OkResponse("Appointment Booked Successfully", 200));
       });
     });
   }).catch((err) => {
@@ -425,7 +421,7 @@ const getAllAppointments = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return res.send(new OkResponse(result, 200));
+      return next(new OkResponse(result, 200));
     });
   }).catch((err) => {
     return next(new BadRequestResponse(err.message, 400));

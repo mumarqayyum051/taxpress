@@ -75,7 +75,26 @@ const getBgs = (req, res, next) => {
     return next(new BadRequestResponse(err.message, 400));
   });
 };
+
+const deleteBg = (req, res, next) => {
+  const { path, id } = req.params;
+  if (!path) {
+    return next(new BadRequestResponse("Path is required"));
+  }
+  const query = `DELETE FROM backgrounds WHERE path = '${path}' AND id = '${id}'`;
+  db.then((conn) => {
+    conn.query(query, (err, result) => {
+      if (err) {
+        return next(new BadRequestResponse(err.message, 400));
+      }
+      return next(new OkResponse("Background has been deleted", 200));
+    });
+  }).catch((err) => {
+    return next(new BadRequestResponse(err.message, 400));
+  });
+};
 module.exports = {
   uploadBgs,
   getBgs,
+  deleteBg,
 };

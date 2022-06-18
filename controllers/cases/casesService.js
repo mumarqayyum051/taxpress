@@ -97,7 +97,7 @@ const addCase = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return res.send(new OkResponse("Statutes has been created", 200));
+      return next(new OkResponse("Statutes has been created", 200));
     });
     // });
   });
@@ -219,7 +219,7 @@ const updateCase = (req, res, next) => {
               if (err) {
                 return next(new BadRequestResponse(err.message, 400));
               }
-              return res.send(
+              return next(
                 new OkResponse("Case has been updated successfully", 200),
               );
             });
@@ -232,7 +232,7 @@ const updateCase = (req, res, next) => {
               if (err) {
                 return next(new BadRequestResponse(err, 400));
               } else {
-                return res.send(
+                return next(
                   new OkResponse("Case has been updated successfully", 200),
                 );
               }
@@ -348,9 +348,9 @@ const searchCase = (req, res, next) => {
         return res.status(403).send(new BadRequestResponse(err));
       }
       if (result.length === 0) {
-        return res.send(new OkResponse(result, 200));
+        return next(new OkResponse(result, 200));
       }
-      return res.send(new OkResponse(result, 200));
+      return next(new OkResponse(result, 200));
     });
   });
 };
@@ -366,9 +366,7 @@ const deleteCase = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err));
       }
-      return res.send(
-        new OkResponse("Case has been deleted successfully", 200),
-      );
+      return next(new OkResponse("Case has been deleted successfully", 200));
     });
   });
 };
@@ -380,7 +378,7 @@ const getAllCases = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err));
       }
-      return res.send(new OkResponse(result, 200));
+      return next(new OkResponse(result, 200));
     });
   });
 };
@@ -396,7 +394,7 @@ const getCaseById = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err));
       }
-      return res.send(new OkResponse(result, 200));
+      return next(new OkResponse(result, 200));
     });
   });
 };

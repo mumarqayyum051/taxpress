@@ -26,7 +26,7 @@ const addMember = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return res.send(new OkResponse("Member has been added to the team", 200));
+      return next(new OkResponse("Member has been added to the team", 200));
     });
   });
 };
@@ -49,7 +49,7 @@ const editMember = (req, res, next) => {
           if (err) {
             return next(new BadRequestResponse(err.message, 400));
           }
-          return res.send(
+          return next(
             new OkResponse(
               "Member details have been updated successfully",
               200,
@@ -65,7 +65,7 @@ const editMember = (req, res, next) => {
           if (err) {
             return next(new BadRequestResponse(err, 400));
           } else {
-            return res.send(
+            return next(
               new OkResponse(
                 "Member details have been updated successfully",
                 200,
@@ -93,9 +93,7 @@ const deleteMember = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return res.send(
-        new OkResponse("Member has been deleted from the team", 200),
-      );
+      return next(new OkResponse("Member has been deleted from the team", 200));
     });
   });
 };
@@ -107,7 +105,7 @@ const getAllMembers = (req, res, next) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return res.send(new OkResponse(result, 200));
+      return next(new OkResponse(result, 200));
     });
   });
 };
@@ -121,9 +119,9 @@ const getMember = (req, res, next) => {
         return next(new BadRequestResponse(err.message, 400));
       }
       if (result.length) {
-        return res.send(new OkResponse(result[0], 200));
+        return next(new OkResponse(result[0], 200));
       }
-      return res.send(new OkResponse(result, 200));
+      return next(new OkResponse(result, 200));
     });
   });
 };
