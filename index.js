@@ -69,6 +69,7 @@ app.use(
   require("./controllers/heroSection/heroSectionController"),
 );
 
-app.use("/api/client", require("./controllers/client/clientController"));
+app.use("/api/clients", require("./controllers/client/clientController"));
+
 app.use("/api/aboutUs", require("./controllers/aboutUs/aboutUsController"));
 app.use(httpResponse.Middleware);
