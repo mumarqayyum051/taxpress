@@ -1,6 +1,9 @@
+// @ts-ignore
 const { BadRequestResponse, OkResponse } = require("express-http-response");
 const db = require("../../db");
+// @ts-ignore
 const path = require("path");
+// @ts-ignore
 var base64ToFile = require("base64-to-file");
 const addCase = (req, res, next) => {
   let {
@@ -43,9 +46,12 @@ const addCase = (req, res, next) => {
     !journals ||
     !shortParagraph
   ) {
-    return res
-      .status(403)
-      .send(new BadRequestResponse("Please fill all the fields"));
+    return (
+      res
+        .status(403)
+        // @ts-ignore
+        .send(new BadRequestResponse("Please fill all the fields"))
+    );
   }
   try {
     if (section) {
@@ -85,6 +91,7 @@ const addCase = (req, res, next) => {
       journals = journals.replace(/'/g, "\\'");
     }
   } catch (e) {
+    // @ts-ignore
     return next(new BadRequestResponse(e));
   }
 
@@ -93,10 +100,13 @@ const addCase = (req, res, next) => {
   const query = `INSERT INTO cases ( year_or_vol, pageNo, month, law_or_statute_id, section, section2, court, caseNo, dated, textSearch1, textSearch2, phraseSearch, judge, lawyer, appellant_or_opponent, principleOfCaseLaws,shortParagraph,journals, file) VALUES ('${year_or_vol}', '${pageNo}', '${month}', '${law_or_statute_id}', '${section}', '${section2}', '${court}', '${caseNo}', '${dated}', '${textSearch1}', '${textSearch2}', '${phraseSearch}', '${judge}', '${lawyer}', '${appellant_or_opponent}', '${principleOfCaseLaws}','${shortParagraph}', '${journals}', '${filePath}')`;
   console.log(query);
   db.then((conn) => {
+    // @ts-ignore
     conn.query(query, (err, result) => {
       if (err) {
+        // @ts-ignore
         return next(new BadRequestResponse(err.message, 400));
       }
+      // @ts-ignore
       return next(new OkResponse("Statutes has been created", 200));
     });
     // });
@@ -129,6 +139,7 @@ const updateCase = (req, res, next) => {
   const id = req.params.id;
   console.log(req.body);
   if (!id) {
+    // @ts-ignore
     return res.status(403).send(new BadRequestResponse("Please provide id"));
   }
   if (
@@ -151,9 +162,12 @@ const updateCase = (req, res, next) => {
     !journals ||
     !shortParagraph
   ) {
-    return res
-      .status(403)
-      .send(new BadRequestResponse("Please fill all the fields"));
+    return (
+      res
+        .status(403)
+        // @ts-ignore
+        .send(new BadRequestResponse("Please fill all the fields"))
+    );
   }
 
   try {
@@ -161,10 +175,12 @@ const updateCase = (req, res, next) => {
     db.then((conn) => {
       conn.query(query, (err, result) => {
         if (err) {
+          // @ts-ignore
           return next(new BadRequestResponse(err));
         }
         if (result.length === 0) {
           return next(
+            // @ts-ignore
             new BadRequestResponse("No record found against given ID"),
           );
         }
@@ -206,6 +222,7 @@ const updateCase = (req, res, next) => {
             shortParagraph = shortParagraph.replace(/'/g, "\\'");
           }
         } catch (err) {
+          // @ts-ignore
           return next(new BadRequestResponse(err, 400));
         }
         if (!file?.includes("upload")) {
@@ -215,11 +232,14 @@ const updateCase = (req, res, next) => {
           db.then((conn) => {
             let update = `UPDATE cases SET year_or_vol = '${year_or_vol}', pageNo = '${pageNo}', month = '${month}', law_or_statute_id = '${law_or_statute_id}', section = '${section}', section2 = '${section2}', court = '${court}', caseNo = '${caseNo}', dated = '${dated}', textSearch1 = '${textSearch1}', textSearch2 = '${textSearch2}', phraseSearch = '${phraseSearch}', judge = '${judge}', lawyer = '${lawyer}', appellant_or_opponent = '${appellant_or_opponent}', principleOfCaseLaws = '${principleOfCaseLaws}', journals = '${journals}', file = '${filePath}' WHERE id = '${id}'`;
 
+            // @ts-ignore
             conn.query(update, (err, result) => {
               if (err) {
+                // @ts-ignore
                 return next(new BadRequestResponse(err.message, 400));
               }
               return next(
+                // @ts-ignore
                 new OkResponse("Case has been updated successfully", 200),
               );
             });
@@ -228,11 +248,14 @@ const updateCase = (req, res, next) => {
           let update = `UPDATE cases SET year_or_vol = '${year_or_vol}', pageNo = '${pageNo}', month = '${month}', law_or_statute_id = '${law_or_statute_id}', section = '${section}', section2 = '${section2}', court = '${court}', caseNo = '${caseNo}', dated = '${dated}', textSearch1 = '${textSearch1}', textSearch2 = '${textSearch2}', phraseSearch = '${phraseSearch}', judge = '${judge}', lawyer = '${lawyer}', appellant_or_opponent = '${appellant_or_opponent}', principleOfCaseLaws = '${principleOfCaseLaws}', journals = '${journals}',shortParagraph='${shortParagraph}' ,file = '${file}' WHERE id = '${id}'`;
 
           db.then((conn) => {
+            // @ts-ignore
             conn.query(update, (err, result) => {
               if (err) {
+                // @ts-ignore
                 return next(new BadRequestResponse(err, 400));
               } else {
                 return next(
+                  // @ts-ignore
                   new OkResponse("Case has been updated successfully", 200),
                 );
               }
@@ -242,6 +265,7 @@ const updateCase = (req, res, next) => {
       });
     });
   } catch (e) {
+    // @ts-ignore
     return next(new BadRequestResponse(e));
   }
 };
@@ -267,9 +291,12 @@ const searchCase = (req, res, next) => {
     shortParagraph,
   } = req.body || req.body.case;
   if (!req.body) {
-    return res
-      .status(403)
-      .send(new BadRequestResponse("Please at least send one field"));
+    return (
+      res
+        .status(403)
+        // @ts-ignore
+        .send(new BadRequestResponse("Please at least send one field"))
+    );
   }
   let query = `SELECT * FROM cases WHERE`;
   if (year_or_vol) {
@@ -335,21 +362,23 @@ const searchCase = (req, res, next) => {
   }
   //
   if (!query.includes("LIKE")) {
-    return res
-      .status(422)
-      .send(
-        new BadRequestResponse("Please pass at least one search parameter"),
-      );
+    return res.status(422).send(
+      // @ts-ignore
+      new BadRequestResponse("Please pass at least one search parameter"),
+    );
   }
 
   db.then((conn) => {
     conn.query(query, (err, result) => {
       if (err) {
+        // @ts-ignore
         return res.status(403).send(new BadRequestResponse(err));
       }
       if (result.length === 0) {
+        // @ts-ignore
         return next(new OkResponse(result, 200));
       }
+      // @ts-ignore
       return next(new OkResponse(result, 200));
     });
   });
@@ -357,43 +386,54 @@ const searchCase = (req, res, next) => {
 const deleteCase = (req, res, next) => {
   const id = req.params.id;
   if (!id) {
+    // @ts-ignore
     return res.status(403).send(new BadRequestResponse("Please provide id"));
   }
   let deleteQuery = `DELETE FROM cases WHERE id = '${id}'`;
 
   db.then((conn) => {
+    // @ts-ignore
     conn.query(deleteQuery, (err, result) => {
       if (err) {
+        // @ts-ignore
         return next(new BadRequestResponse(err));
       }
+      // @ts-ignore
       return next(new OkResponse("Case has been deleted successfully", 200));
     });
   });
 };
 
+// @ts-ignore
 const getAllCases = (req, res, next) => {
   let query = `SELECT * FROM cases`;
   db.then((conn) => {
     conn.query(query, (err, result) => {
       if (err) {
+        // @ts-ignore
         return next(new BadRequestResponse(err));
       }
+      // @ts-ignore
       return next(new OkResponse(result, 200));
     });
   });
 };
 
+// @ts-ignore
 const getCaseById = (req, res, next) => {
   const id = req.params.id;
   if (!id) {
+    // @ts-ignore
     return next(new BadRequestResponse("Please provide id"));
   }
   let query = `SELECT * FROM cases WHERE id = '${id}'`;
   db.then((conn) => {
     conn.query(query, (err, result) => {
       if (err) {
+        // @ts-ignore
         return next(new BadRequestResponse(err));
       }
+      // @ts-ignore
       return next(new OkResponse(result, 200));
     });
   });
