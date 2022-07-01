@@ -72,4 +72,8 @@ app.use(
 app.use("/api/clients", require("./controllers/client/clientController"));
 
 app.use("/api/aboutUs", require("./controllers/aboutUs/aboutUsController"));
+app.use(
+  "/api/userCreation",
+  require("./controllers/userCreation/userCreationController"),
+);
 app.use(httpResponse.Middleware);

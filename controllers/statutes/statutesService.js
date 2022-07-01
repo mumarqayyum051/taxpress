@@ -1,8 +1,12 @@
+// @ts-ignore
 const { BadRequestResponse, OkResponse } = require("express-http-response");
 const db = require("../../db");
+// @ts-ignore
 const path = require("path");
+// @ts-ignore
 var base64ToFile = require("base64-to-file");
 
+// @ts-ignore
 const addStatutes = (req, res, next) => {
   let { law_or_statute, chapter, section, textSearch1, textSearch2 } =
     req.body || req.body.statutes;
@@ -10,6 +14,7 @@ const addStatutes = (req, res, next) => {
 
   if (!law_or_statute || !chapter || !section || !textSearch1 || !textSearch2) {
     return next(
+      // @ts-ignore
       new BadRequestResponse("Please fill all the required fields", 400),
     );
   }
@@ -22,26 +27,33 @@ const addStatutes = (req, res, next) => {
       textSearch1 = textSearch1.replace(/'/g, "\\'");
       textSearch2 = textSearch2.replace(/'/g, "\\'");
     } catch (e) {
+      // @ts-ignore
       return next(new BadRequestResponse(e, 400));
     }
     let filePath = req?.file?.path?.split("\\").join("/");
     const query = `INSERT INTO statutes (law_or_statute, chapter, section, textSearch1, textSearch2, file) VALUES ('${law_or_statute}', '${chapter}', '${section}', '${textSearch1}', '${textSearch2}', '${filePath}')`;
 
     db.then((conn) => {
+      // @ts-ignore
       conn.query(query, (err, result) => {
         if (err) {
+          // @ts-ignore
           return next(new BadRequestResponse(err.message, 400));
         }
+        // @ts-ignore
         return next(new OkResponse("Statutes has been created", 200));
       });
     }).catch((err) => {
+      // @ts-ignore
       return next(new BadRequestResponse(err, 400));
     });
   } catch (e) {
+    // @ts-ignore
     return next(new BadRequestResponse(e, 400));
   }
 };
 
+// @ts-ignore
 const editStatutesById = (req, res, next) => {
   const { id } = req.params;
   console.log(id);
@@ -57,6 +69,7 @@ const editStatutesById = (req, res, next) => {
       !textSearch2
     ) {
       return next(
+        // @ts-ignore
         new BadRequestResponse("Please fill all the required fields"),
       );
     }
@@ -68,6 +81,7 @@ const editStatutesById = (req, res, next) => {
       textSearch1 = textSearch1.replace(/'/g, "\\'");
       textSearch2 = textSearch2.replace(/'/g, "\\'");
     } catch (e) {
+      // @ts-ignore
       return next(new BadRequestResponse(e, 400));
     }
 
@@ -77,11 +91,14 @@ const editStatutesById = (req, res, next) => {
       let update = `UPDATE statutes SET law_or_statute = '${law_or_statute}', chapter = '${chapter}', section = '${section}', textSearch1 = '${textSearch1}', textSearch2 = '${textSearch2}', file = '${filePath}' WHERE id = ${id}`;
 
       db.then((conn) => {
+        // @ts-ignore
         conn.query(update, (err, result) => {
           if (err) {
+            // @ts-ignore
             return next(new BadRequestResponse(err.message, 400));
           }
           return next(
+            // @ts-ignore
             new OkResponse("Statute has been updated successfully", 200),
           );
         });
@@ -90,11 +107,14 @@ const editStatutesById = (req, res, next) => {
       let update = `UPDATE statutes SET law_or_statute = '${law_or_statute}', chapter = '${chapter}', section = '${section}', textSearch1 = '${textSearch1}', textSearch2 = '${textSearch2}', file = '${file}' WHERE id = ${id}`;
 
       db.then((conn) => {
+        // @ts-ignore
         conn.query(update, (err, result) => {
           if (err) {
+            // @ts-ignore
             return next(new BadRequestResponse(err, 400));
           } else {
             return next(
+              // @ts-ignore
               new OkResponse("Statute has been updated successfully", 200),
             );
           }
@@ -102,6 +122,7 @@ const editStatutesById = (req, res, next) => {
       });
     }
   } catch (e) {
+    // @ts-ignore
     return next(new BadRequestResponse(e, 400));
   }
 };
@@ -134,67 +155,81 @@ const searchStatutes = (req, res, next) => {
     search = search.split("OR").slice(0, -1).join(" OR ");
   }
   if (!search.includes("LIKE")) {
-    return res
-      .status(422)
-      .send(
-        new BadRequestResponse("Please pass at least one search parameter"),
-      );
+    return res.status(422).send(
+      // @ts-ignore
+      new BadRequestResponse("Please pass at least one search parameter"),
+    );
   }
   console.log("-result---", search);
   db.then((conn) => {
     conn.query(search, (err, result) => {
       if (err) {
+        // @ts-ignore
         return next(new BadRequestResponse(err.message, 400));
       }
+      // @ts-ignore
       return next(new OkResponse(result, 200));
     });
   });
 };
 
+// @ts-ignore
 const getAllStatutes = (req, res, next) => {
   const query = `SELECT * FROM statutes`;
   db.then((conn) => {
     conn.query(query, (err, result) => {
       if (err) {
+        // @ts-ignore
         return next(new BadRequestResponse(err.message, 400));
       }
+      // @ts-ignore
       return next(new OkResponse(result, 200));
     });
   });
 };
 
+// @ts-ignore
 const getStatutesOnly = (req, res, next) => {
   const query = `SELECT id,law_or_statute FROM statutes`;
   db.then((conn) => {
     conn.query(query, (err, result) => {
       if (err) {
+        // @ts-ignore
         return next(new BadRequestResponse(err.message, 400));
       }
+      // @ts-ignore
       return next(new OkResponse(result, 200));
     });
   });
 };
 
+// @ts-ignore
 const getStatuteById = (req, res, next) => {
   const { id } = req.params;
   const query = `SELECT * FROM statutes WHERE id = ${id}`;
   db.then((conn) => {
     conn.query(query, (err, result) => {
       if (err) {
+        // @ts-ignore
         return next(new BadRequestResponse(err.message, 400));
       }
+      // @ts-ignore
       return next(new OkResponse(result, 200));
     });
   });
 };
+// @ts-ignore
 const deleteStatute = (req, res, next) => {
   const { id } = req.params;
   const query = `DELETE FROM statutes WHERE id = ${id}`;
   db.then((conn) => {
+    // @ts-ignore
     conn.query(query, (err, result) => {
       if (err) {
+        // @ts-ignore
         return next(new BadRequestResponse(err.message, 400));
       }
+      // @ts-ignore
       return next(new OkResponse("Statute deleted successfully", 200));
     });
   });

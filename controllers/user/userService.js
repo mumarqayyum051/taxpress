@@ -187,7 +187,8 @@ const generateToken = (email, id) => {
 
 const userContext = (req, res, next) => {
   //
-  next(req.user);
+  return next(new OkResponse(req.user));
+  // next(req.user);
 };
 
 module.exports = {

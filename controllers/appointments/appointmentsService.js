@@ -415,13 +415,59 @@ const bookeAppointmentSlot = (req, res, next) => {
 };
 
 const getAllAppointments = (req, res, next) => {
-  const query = `SELECT appointments.*,appointment_slots.startTime, appointment_slots.endTime FROM appointments INNER JOIN appointment_slots ON appointments.appointment_slot_id = appointment_slots.id order by id DESC`;
+  try {
+    const admin = req.admin;
+    if (
+      admin.user_role === "call_appointment_admin" ||
+      admin.user_role === "physical_appointment_admin"
+    ) {
+      const query = `SELECT * FROM appointments where assignedTo = ${admin.id}`;
+      db.then((conn) => {
+        conn.query(query, (err, result) => {
+          if (err) {
+            return next(new BadRequestResponse(err.message, 400));
+          }
+          return next(new OkResponse(result, 200));
+        });
+      }).catch((err) => {
+        return next(new BadRequestResponse(err.message, 400));
+      });
+    } else {
+      const query = `SELECT appointments.*,appointment_slots.startTime, appointment_slots.endTime FROM appointments INNER JOIN appointment_slots ON appointments.appointment_slot_id = appointment_slots.id order by id DESC`;
+      db.then((conn) => {
+        conn.query(query, (err, result) => {
+          if (err) {
+            return next(new BadRequestResponse(err.message, 400));
+          }
+          return next(new OkResponse(result, 200));
+        });
+      }).catch((err) => {
+        return next(new BadRequestResponse(err.message, 400));
+      });
+    }
+  } catch (e) {
+    return next(new BadRequestResponse(e.message, 400));
+  }
+};
+
+const assignment = (req, res, next) => {
+  const { assignedBy, assignedTo } = req.body;
+  const id = req.params.id;
+  if (!id) {
+    return next(new BadRequestResponse("Please provide an id"));
+  }
+  if (!assignedTo || !assignedBy) {
+    return next(
+      new BadRequestResponse("Please provide all the required fields"),
+    );
+  }
+  const query = `UPDATE appointments SET assignedBy = '${assignedBy}', assignedTo = '${assignedTo}' WHERE id = '${id}'`;
   db.then((conn) => {
     conn.query(query, (err, result) => {
       if (err) {
         return next(new BadRequestResponse(err.message, 400));
       }
-      return next(new OkResponse(result, 200));
+      return next(new OkResponse("Appointment has been assigned", 200));
     });
   }).catch((err) => {
     return next(new BadRequestResponse(err.message, 400));
@@ -438,4 +484,5 @@ module.exports = {
   bookeAppointmentSlot,
   getAllAppointments,
   changeAppointmentStatus,
+  assignment,
 };
